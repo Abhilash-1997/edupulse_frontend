@@ -36,7 +36,7 @@ export default function FeeReceipts() {
         try {
             const res = await financeService.getReceipts();
             if (res.data?.success) {
-                const data = res.data.data.receipts || [];
+                const data = res.data?.data.content || [];
                 setReceipts(data);
 
                 // Calculate basic stats from client side data
@@ -62,7 +62,7 @@ export default function FeeReceipts() {
     const loadClasses = async () => {
         try {
             const res = await academicService.getAllClasses();
-            if (res.data?.success) setClasses(res.data.data.classes || []);
+            if (res.data?.success) setClasses(res.data?.data || []);
         } catch (error) {
         }
     };
@@ -86,7 +86,7 @@ export default function FeeReceipts() {
         try {
             const res = await financeService.getClassFeeStatus(classId);
             if (res.data?.success) {
-                setClassStudents(res.data.data.students || []);
+                setClassStudents(res.data?.data || []);
             }
         } catch (error) {
             addToast({ title: "Error", description: "Failed to load students", color: "danger" });
@@ -170,6 +170,11 @@ export default function FeeReceipts() {
         addToast({ title: "Refreshed", description: "Data updated successfully", color: "success" });
     };
 
+    useEffect(() => {
+        console.log("Fee Receipts =-=-=-=-=-=-=-=-=-=- ", receipts);
+        
+    }, [receipts])
+
     const statCards = [
         {
             title: 'Collected Today',
@@ -240,10 +245,14 @@ export default function FeeReceipts() {
                                 startContent={<Icon icon="solar:users-group-rounded-bold-duotone" className="text-default-400" />}
                                 variant="bordered"
                                 selectedKeys={selectedClass ? new Set([String(selectedClass)]) : new Set()}
-                                onChange={(e) => setSelectedClass(e.target.value)}
+                                // onChange={(e) => setSelectedClass(e.target.value)}
+                                onSelectionChange={(keys) => {
+                                    const value = [...keys][0];
+                                    setSelectedClass(value || "");
+                                }}
                             >
                                 {classes.map((c) => (
-                                    <SelectItem key={String(c.id)} value={String(c.id)}>
+                                    <SelectItem key={String(c.id)}>
                                         {c.name} {c.section}
                                     </SelectItem>
                                 ))}
@@ -347,15 +356,15 @@ export default function FeeReceipts() {
                                                 size="sm"
                                                 variant="flat"
                                                 className="capitalize"
-                                                color={student.paymentStatus === 'PAID' ? 'success' : student.paymentStatus === 'PARTIAL' ? 'warning' : 'danger'}
-                                                startContent={student.paymentStatus === 'PAID' ? <Icon icon="solar:check-circle-bold" /> : <Icon icon="solar:clock-circle-bold" />}
+                                                color={student.status === 'PAID' ? 'success' : student.status === 'PARTIAL' ? 'warning' : 'danger'}
+                                                startContent={student.status === 'PAID' ? <Icon icon="solar:check-circle-bold" /> : <Icon icon="solar:clock-circle-bold" />}
                                             >
-                                                {student.paymentStatus.toLowerCase()}
+                                                {student.status.toLowerCase()}
                                             </Chip>
                                         </TableCell>
                                         <TableCell>
-                                            <span className={`font-semibold ${student.pendingAmount > 0 ? "text-danger" : "text-success"}`}>
-                                                ₹{student.pendingAmount.toLocaleString('en-IN')}
+                                            <span className={`font-semibold ${student.balance > 0 ? "text-danger" : "text-success"}`}>
+                                                ₹{student.balance.toLocaleString('en-IN')}
                                             </span>
                                         </TableCell>
                                         <TableCell>

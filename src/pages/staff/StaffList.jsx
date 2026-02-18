@@ -48,8 +48,12 @@ const StaffList = () => {
         try {
             const params = Object.fromEntries(searchParams.entries());
             const response = await staffService.getAllStaff(params);
+            console.log("Responseeeeeeeeee ", response);
+            console.log("Responseeeeeeeeee 111", response.data);
+            console.log("Responseeeeeeeeee 222", response.data.data);
+            
             if (response?.data?.success) {
-                setStaff(response.data.data || []);
+                setStaff(response.data?.data || []);
             } else {
                 addToast({ title: "Error", description: response?.data?.message || "Failed to load staff", color: "danger" });
             }
@@ -112,11 +116,17 @@ const StaffList = () => {
         }
     };
 
+    
     const filteredStaff = staff.filter(s =>
-        s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.staffProfile?.employeeCode?.toLowerCase().includes(searchQuery.toLowerCase())
+        s.user?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.user?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.employeeCode?.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    
+    
+    useEffect(() => {
+        console.log("Staff Detailsssssssss ", staff);
+    },[staff])
 
     return (
         <motion.div
@@ -178,26 +188,26 @@ const StaffList = () => {
                         <TableRow key={person.id} as={motion.tr} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}>
                             <TableCell>
                                 <div>
-                                    <p className="font-semibold">{person.name}</p>
+                                    <p className="font-semibold">{person.user?.name}</p>
                                     <p className="text-tiny text-default-500">{person.staffProfile?.employeeCode}</p>
                                 </div>
                             </TableCell>
                             <TableCell>
                                 <div>
-                                    <p className="text-small">{person.email}</p>
-                                    <p className="text-tiny text-default-500">{person.phone || "N/A"}</p>
+                                    <p className="text-small">{person.user?.email}</p>
+                                    <p className="text-tiny text-default-500">{person.user?.phone || "N/A"}</p>
                                 </div>
                             </TableCell>
                             <TableCell>
                                 <div className="flex items-center gap-2">
-                                    <Icon icon={person.role === "TEACHER" ? "lucide:graduation-cap" : person.role === "LIBRARIAN" ? "lucide:book" : "lucide:briefcase"} width={16} />
-                                    <span>{person.role}</span>
+                                    <Icon icon={person.user?.role === "TEACHER" ? "lucide:graduation-cap" : person.role === "LIBRARIAN" ? "lucide:book" : "lucide:briefcase"} width={16} />
+                                    <span>{person.user?.role}</span>
                                 </div>
                             </TableCell>
                             <TableCell>
                                 <div>
-                                    <p className="text-small">{person.StaffProfile?.designation || "-"}</p>
-                                    <p className="text-tiny text-default-500">{person.StaffProfile?.department || "-"}</p>
+                                    <p className="text-small">{person.designation || "-"}</p>
+                                    <p className="text-tiny text-default-500">{person.department || "-"}</p>
                                 </div>
                             </TableCell>
                             <TableCell>
@@ -218,10 +228,10 @@ const StaffList = () => {
                                             </Button>
                                         </DropdownTrigger>
                                         <DropdownMenu aria-label="Document Actions">
-                                            <DropdownItem key="offer" onPress={() => handleGenerateLetter('offer', person.id, person.name)}>
+                                            <DropdownItem key="offer" onPress={() => handleGenerateLetter('offer', person.id, person.user?.name)}>
                                                 Generate Offer Letter
                                             </DropdownItem>
-                                            <DropdownItem key="joining" onPress={() => handleGenerateLetter('joining', person.id, person.name)}>
+                                            <DropdownItem key="joining" onPress={() => handleGenerateLetter('joining', person.id, person.user?.name)}>
                                                 Generate Joining Letter
                                             </DropdownItem>
                                         </DropdownMenu>
