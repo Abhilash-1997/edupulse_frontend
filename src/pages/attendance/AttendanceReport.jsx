@@ -1,0 +1,284 @@
+import React, { useState, useEffect } from 'react';
+import { Card, CardBody, Select, SelectItem, Input, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Spinner, Button } from "@heroui/react";
+import { Icon } from "@iconify/react";
+import { academicService, attendanceService } from '@/services';
+import { motion } from "framer-motion";
+import { PageHeader } from '@/components/common';
+
+export default function AttendanceReport() {
+    const [sections, setSections] = useState([]);
+    const [selectedSection, setSelectedSection] = useState('');
+    const [reportType, setReportType] = useState('MONTHLY'); // 'MONTHLY' or 'DAILY'
+    const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]); // YYYY-MM-DD
+    const [reportData, setReportData] = useState([]);
+    const [stats, setStats] = useState({ present: 0, absent: 0, late: 0, halfDay: 0, total: 0 });
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        fetchSections();
+    }, []);
+
+    useEffect(() => {
+        if (selectedSection) {
+            fetchReport();
+        }
+    }, [selectedSection, selectedMonth, selectedDate, reportType]);
+
+    const fetchSections = async () => {
+        try {
+            const response = await academicService.getAllSections();
+            if (response.data?.success) {
+                setSections(response.data.data || []);
+            }
+        } catch (error) {
+        }
+    };
+
+    const fetchReport = async () => {
+        setLoading(true);
+        try {
+            const params = { sectionId: selectedSection };
+
+            if (reportType === 'DAILY') {
+                params.date = selectedDate;
+            } else {
+                // Calculate start and end date of the month
+                const year = parseInt(selectedMonth.split('-')[0]);
+                const month = parseInt(selectedMonth.split('-')[1]) - 1; // 0-indexed
+                const startDate = new Date(year, month, 1).toISOString().split('T')[0];
+                const endDate = new Date(year, month + 1, 0).toISOString().split('T')[0]; // Last day of month
+
+                params.startDate = startDate;
+                params.endDate = endDate;
+            }
+
+            const response = await attendanceService.getAttendanceReport(params);
+
+            if (response.data?.success) {
+                // Backend returns data: { attendance: [...] }
+                const data = response.data.data?.attendance || [];
+                setReportData(data);
+                calculateStats(data);
+            } else {
+                setReportData([]);
+                setStats({ present: 0, absent: 0, late: 0, halfDay: 0, total: 0 });
+            }
+        } catch (error) {
+            setReportData([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const calculateStats = (data) => {
+        const counts = { present: 0, absent: 0, late: 0, halfDay: 0, total: data.length };
+        data.forEach(record => {
+            if (record.status === 'PRESENT') counts.present++;
+            else if (record.status === 'ABSENT') counts.absent++;
+            else if (record.status === 'LATE') counts.late++;
+            else if (record.status === 'HALF_DAY') counts.halfDay++;
+        });
+        setStats(counts);
+    };
+
+    const handleClassChange = (keys) => {
+        const sectionId = Array.from(keys)[0];
+        setSelectedSection(sectionId);
+    };
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'PRESENT': return 'success';
+            case 'ABSENT': return 'danger';
+            case 'LATE': return 'warning';
+            case 'HALF_DAY': return 'primary';
+            default: return 'default';
+        }
+    };
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1 }
+    };
+
+    return (
+        <motion.div
+            className="p-6 space-y-6"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+        >
+            <motion.div variants={itemVariants}>
+                <PageHeader
+                    title="Attendance Reports"
+                    subtitle="View detailed attendance history"
+                    action={
+                        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto items-end">
+                            <div className="flex bg-default-100 p-1 rounded-lg h-10 items-center">
+                                <Button
+                                    size="sm"
+                                    radius="sm"
+                                    variant={reportType === 'DAILY' ? 'solid' : 'light'}
+                                    color={reportType === 'DAILY' ? 'primary' : 'default'}
+                                    onPress={() => setReportType('DAILY')}
+                                    className={reportType === 'DAILY' ? "shadow-sm font-medium" : "text-default-500"}
+                                >
+                                    Daily
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    radius="sm"
+                                    variant={reportType === 'MONTHLY' ? 'solid' : 'light'}
+                                    color={reportType === 'MONTHLY' ? 'primary' : 'default'}
+                                    onPress={() => setReportType('MONTHLY')}
+                                    className={reportType === 'MONTHLY' ? "shadow-sm font-medium" : "text-default-500"}
+                                >
+                                    Monthly
+                                </Button>
+                            </div>
+
+                            <Select
+                                className="min-w-[200px]"
+                                label="Select Class"
+                                placeholder="Choose a class"
+                                selectedKeys={selectedSection ? new Set([String(selectedSection)]) : new Set()}
+                                onSelectionChange={handleClassChange}
+                                startContent={<Icon icon="mdi:google-classroom" className="text-default-400" />}
+                                variant="bordered"
+                                size="sm"
+                            >
+                                {sections.map((sec) => (
+                                    <SelectItem key={String(sec.id)} textValue={`${sec.className} - ${sec.name}`}>
+                                        {sec.className} - {sec.name}
+                                    </SelectItem>
+                                ))}
+                            </Select>
+
+                            {reportType === 'MONTHLY' ? (
+                                <Input
+                                    type="month"
+                                    label="Select Month"
+                                    className="min-w-[200px]"
+                                    value={selectedMonth}
+                                    onChange={(e) => setSelectedMonth(e.target.value)}
+                                    variant="bordered"
+                                    size="sm"
+                                />
+                            ) : (
+                                <Input
+                                    type="date"
+                                    label="Select Date"
+                                    className="min-w-[200px]"
+                                    value={selectedDate}
+                                    onChange={(e) => setSelectedDate(e.target.value)}
+                                    variant="bordered"
+                                    size="sm"
+                                />
+                            )}
+                        </div>
+                    }
+                />
+            </motion.div>
+
+            {/* Stats Cards */}
+            <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card className="bg-content1 shadow-sm border-l-4 border-l-success border-y border-r border-y-default-200 border-r-default-200">
+                    <CardBody className="flex flex-row items-center gap-4 p-4">
+                        <div className="p-3 bg-success/10 rounded-xl">
+                            <Icon icon="mdi:check-circle" className="text-2xl text-success" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-default-500">Present</p>
+                            <p className="text-2xl font-bold text-foreground">{stats.present}</p>
+                        </div>
+                    </CardBody>
+                </Card>
+                <Card className="bg-content1 shadow-sm border-l-4 border-l-danger border-y border-r border-y-default-200 border-r-default-200">
+                    <CardBody className="flex flex-row items-center gap-4 p-4">
+                        <div className="p-3 bg-danger/10 rounded-xl">
+                            <Icon icon="mdi:close-circle" className="text-2xl text-danger" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-default-500">Absent</p>
+                            <p className="text-2xl font-bold text-foreground">{stats.absent}</p>
+                        </div>
+                    </CardBody>
+                </Card>
+                <Card className="bg-content1 shadow-sm border-l-4 border-l-warning border-y border-r border-y-default-200 border-r-default-200">
+                    <CardBody className="flex flex-row items-center gap-4 p-4">
+                        <div className="p-3 bg-warning/10 rounded-xl">
+                            <Icon icon="mdi:clock-alert" className="text-2xl text-warning" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-default-500">Late</p>
+                            <p className="text-2xl font-bold text-foreground">{stats.late}</p>
+                        </div>
+                    </CardBody>
+                </Card>
+                <Card className="bg-content1 shadow-sm border-l-4 border-l-primary border-y border-r border-y-default-200 border-r-default-200">
+                    <CardBody className="flex flex-row items-center gap-4 p-4">
+                        <div className="p-3 bg-primary/10 rounded-xl">
+                            <Icon icon="mdi:weather-sunset" className="text-2xl text-primary" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-default-500">Half Day</p>
+                            <p className="text-2xl font-bold text-foreground">{stats.halfDay}</p>
+                        </div>
+                    </CardBody>
+                </Card>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+                <Card className="bg-content1 border border-default-200 shadow-sm">
+                    <CardBody className="pb-4">
+                        <Table
+                            aria-label="Attendance Report Table"
+                            removeWrapper
+                            classNames={{ th: "bg-default-100 text-default-500 font-medium" }}
+                        >
+                            <TableHeader>
+                                <TableColumn>DATE</TableColumn>
+                                <TableColumn>STUDENT</TableColumn>
+                                <TableColumn>STATUS</TableColumn>
+                            </TableHeader>
+                            <TableBody
+                                emptyContent={loading ? <Spinner /> : "No attendance records found for this selection."}
+                                isLoading={loading}
+                            >
+                                {reportData.map((record, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>
+                                            <span className="text-default-500">
+                                                {new Date(record.date).toLocaleDateString()}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="font-medium">
+                                                {record.Student?.name ||
+                                                    (record.Student?.firstName ? `${record.Student.firstName} ${record.Student.lastName}` : 'Unknown Student')}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Chip size="sm" color={getStatusColor(record.status)} variant="flat">
+                                                {record.status}
+                                            </Chip>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </CardBody>
+                </Card>
+            </motion.div>
+        </motion.div>
+    );
+}
