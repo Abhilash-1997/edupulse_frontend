@@ -57,7 +57,9 @@ export default function AttendanceReport() {
 
             if (response.data?.success) {
                 // Backend returns data: { attendance: [...] }
-                const data = response.data.data?.attendance || [];
+                const data = response.data?.data || [];
+                console.log("Attendance data ", data);
+                
                 setReportData(data);
                 calculateStats(data);
             } else {
@@ -254,7 +256,7 @@ export default function AttendanceReport() {
                                 emptyContent={loading ? <Spinner /> : "No attendance records found for this selection."}
                                 isLoading={loading}
                             >
-                                {reportData.map((record, index) => (
+                                {reportData?.map((record, index) => (
                                     <TableRow key={index}>
                                         <TableCell>
                                             <span className="text-default-500">
@@ -263,7 +265,7 @@ export default function AttendanceReport() {
                                         </TableCell>
                                         <TableCell>
                                             <div className="font-medium">
-                                                {record.Student?.name ||
+                                                {record.studentName ||
                                                     (record.Student?.firstName ? `${record.Student.firstName} ${record.Student.lastName}` : 'Unknown Student')}
                                             </div>
                                         </TableCell>

@@ -225,8 +225,8 @@ export default function LinkStudentToParent() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            {student.Class ? (
-                                                <span>{student.Class.name}-{student.Class.section}</span>
+                                            {student.classInfo ? (
+                                                <span>{student.classInfo.name}-{student.sectionInfo?.name}</span>
                                             ) : (
                                                 <span className="text-default-400">-</span>
                                             )}

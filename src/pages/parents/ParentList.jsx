@@ -229,7 +229,7 @@ export default function ParentList() {
                               className="text-lg text-primary cursor-pointer active:opacity-50"
                               onClick={() =>
                                 navigate(
-                                  `/parents/${parent.parentId}/link-students`,
+                                  `/parents/${parent.id}/link-students`,
                                   {
                                     state: { parent },
                                   },

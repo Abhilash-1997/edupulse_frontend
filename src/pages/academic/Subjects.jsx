@@ -56,10 +56,10 @@ export default function Subjects() {
             ]);
 
             if (subjectsRes.data?.success) {
-                setSubjects(subjectsRes.data.data?.subjects || []);
+                setSubjects(subjectsRes.data?.data || []);
             }
             if (classesRes.data?.success) {
-                setClasses(classesRes.data.data?.classes || []);
+                setClasses(classesRes.data?.data || []);
             }
 
         } catch (error) {

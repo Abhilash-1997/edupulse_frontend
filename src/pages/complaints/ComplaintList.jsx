@@ -124,10 +124,10 @@ const ComplaintList = ({ refreshTrigger }) => {
                                     </Button>
                                 </DropdownTrigger>
                                 <DropdownMenu aria-label="Status Actions" onAction={(key) => handleStatusUpdate(item.id, key)}>
-                                    <DropdownItem key="PENDING">Mark as Pending</DropdownItem>
-                                    <DropdownItem key="IN_PROGRESS">Mark as In Progress</DropdownItem>
-                                    <DropdownItem key="RESOLVED" className="text-success">Mark as Resolved</DropdownItem>
-                                    <DropdownItem key="REJECTED" className="text-danger">Reject</DropdownItem>
+                                    <DropdownItem key="Pending">Mark as Pending</DropdownItem>
+                                    <DropdownItem key="In_Progress">Mark as In Progress</DropdownItem>
+                                    <DropdownItem key="Resolved" className="text-success">Mark as Resolved</DropdownItem>
+                                    <DropdownItem key="Rejected" className="text-danger">Reject</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         )}
