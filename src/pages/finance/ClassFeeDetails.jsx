@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     Card,
@@ -25,7 +25,7 @@ import { motion } from "framer-motion";
 export default function ClassFeeDetails() {
     const { classId } = useParams();
     const navigate = useNavigate();
-    const [data, setData] = useState(null);
+    const [students, setStudents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filterStatus, setFilterStatus] = useState('ALL');
     const [searchQuery, setSearchQuery] = useState('');
@@ -39,7 +39,7 @@ export default function ClassFeeDetails() {
             setIsLoading(true);
             const response = await financeService.getClassFeeStatus(classId);
             if (response.data?.success) {
-                setData(response.data.data);
+                setStudents(response.data.data || []);
             } else {
                 addToast({
                     title: 'Error',
@@ -57,15 +57,12 @@ export default function ClassFeeDetails() {
             setIsLoading(false);
         }
     };
-
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-IN', {
+    const formatCurrency = (amount) =>
+        new Intl.NumberFormat('en-IN', {
             style: 'currency',
             currency: 'INR',
             maximumFractionDigits: 0
-        }).format(amount);
-    };
-
+        }).format(amount || 0);
     const getStatusColor = (status) => {
         switch (status) {
             case 'PAID': return 'success';
@@ -75,24 +72,35 @@ export default function ClassFeeDetails() {
         }
     };
 
-    const filteredStudents = (data?.students || []).filter(student => {
-        const matchesStatus = filterStatus === 'ALL' || student.paymentStatus === filterStatus;
-        const matchesSearch = !searchQuery ||
-            student.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            student.admissionNumber.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesStatus && matchesSearch;
-    });
+    // 🔥 Filtered Students
+    const filteredStudents = useMemo(() => {
+        return students.filter(student => {
+            const matchesStatus =
+                filterStatus === 'ALL' || student.status === filterStatus;
 
-    // Calculate summary stats
-    const stats = {
-        total: data?.students?.length || 0,
-        paid: data?.students?.filter(s => s.paymentStatus === 'PAID').length || 0,
-        partial: data?.students?.filter(s => s.paymentStatus === 'PARTIAL').length || 0,
-        pending: data?.students?.filter(s => s.paymentStatus === 'PENDING').length || 0
-    };
+            const matchesSearch =
+                !searchQuery ||
+                student.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                student.admissionNumber.toLowerCase().includes(searchQuery.toLowerCase());
+
+            return matchesStatus && matchesSearch;
+        });
+    }, [students, filterStatus, searchQuery]);
+
+    // 🔥 Summary Stats
+    const stats = useMemo(() => ({
+        total: students.length,
+        paid: students.filter(s => s.status === 'PAID').length,
+        partial: students.filter(s => s.status === 'PARTIAL').length,
+        pending: students.filter(s => s.status === 'PENDING').length
+    }), [students]);
+
+    const className = students?.[0]?.className || 'Class';
+    const feePerStudent = students?.[0]?.totalFeesPerStudent || 0;
 
     return (
         <div className="p-6 space-y-6">
+
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
@@ -104,13 +112,16 @@ export default function ClassFeeDetails() {
                     >
                         Back to Statistics
                     </Button>
+
                     <h1 className="text-3xl font-bold text-foreground">
-                        {data?.classDetails?.name || 'Class'} - Fee Details
+                        {className} - Fee Details
                     </h1>
+
                     <p className="text-default-500 mt-1">
-                        Fee per student: {formatCurrency(data?.classDetails?.totalFeePerStudent || 0)}
+                        Fee per student: {formatCurrency(feePerStudent)}
                     </p>
                 </div>
+
                 <Button
                     color="primary"
                     variant="flat"
@@ -122,8 +133,9 @@ export default function ClassFeeDetails() {
                 </Button>
             </div>
 
-            {/* Summary Cards with Borders */}
+            {/* Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
                 <motion.div whileHover={{ scale: 1.02 }}>
                     <Card className="border-l-4 border-l-primary bg-content1 shadow-sm">
                         <CardBody className="p-4">
@@ -189,45 +201,11 @@ export default function ClassFeeDetails() {
                 </motion.div>
             </div>
 
-            {/* Filters */}
-            <Card className="bg-content1 border border-default-200 shadow-sm">
-                <CardBody>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <Input
-                            placeholder="Search by name or admission number..."
-                            value={searchQuery}
-                            onValueChange={setSearchQuery}
-                            startContent={<Icon icon="mdi:magnify" size={18} className="text-default-400" />}
-                            className="sm:max-w-xs"
-                            variant="bordered"
-                            isClearable
-                            onClear={() => setSearchQuery('')}
-                        />
-                        <Select
-                            placeholder="Filter by status"
-                            selectedKeys={[filterStatus]}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                            className="sm:max-w-xs"
-                            variant="bordered"
-                            startContent={<Icon icon="mdi:filter" size={16} className="text-default-400" />}
-                        >
-                            <SelectItem key="ALL" value="ALL">All Status</SelectItem>
-                            <SelectItem key="PAID" value="PAID">Paid</SelectItem>
-                            <SelectItem key="PARTIAL" value="PARTIAL">Partial</SelectItem>
-                            <SelectItem key="PENDING" value="PENDING">Pending</SelectItem>
-                        </Select>
-                    </div>
-                </CardBody>
-            </Card>
-
             {/* Student Table */}
             <Card className="bg-content1 border border-default-200 shadow-sm">
                 <CardBody className="p-0">
-                    <Table aria-label="Student payment status table" shadow="none" classNames={{
-                        wrapper: "bg-content1 shadow-none",
-                        th: "bg-default-100 text-default-500 font-medium",
-                        td: "text-foreground group-hover:bg-default-50"
-                    }}>
+                    <Table aria-label="Student payment status table" shadow="none">
+
                         <TableHeader>
                             <TableColumn>ADMISSION NO</TableColumn>
                             <TableColumn>STUDENT NAME</TableColumn>
@@ -235,66 +213,36 @@ export default function ClassFeeDetails() {
                             <TableColumn>AMOUNT PAID</TableColumn>
                             <TableColumn>PENDING</TableColumn>
                             <TableColumn>STATUS</TableColumn>
-                            <TableColumn>LAST PAYMENT</TableColumn>
                         </TableHeader>
+
                         <TableBody
-                            emptyContent={
-                                <div className="text-center py-12">
-                                    <Icon
-                                        icon="mdi:account-off"
-                                        className="mx-auto text-default-400 text-6xl mb-4 opacity-50"
-                                    />
-                                    <p className="text-lg font-medium text-foreground">
-                                        No students found
-                                    </p>
-                                    <p className="text-sm text-default-500 mt-1">
-                                        {searchQuery || filterStatus !== 'ALL'
-                                            ? "Try adjusting your filters"
-                                            : "This class has no students yet"}
-                                    </p>
-                                </div>
-                            }
                             isLoading={isLoading}
                             loadingContent={<Spinner label="Loading students..." />}
                         >
                             {filteredStudents.map((student) => (
-                                <TableRow key={student.studentId} className="border-b border-default-100 last:border-none">
-                                    <TableCell>
-                                        <span className="font-mono text-sm text-default-500">{student.admissionNumber}</span>
-                                    </TableCell>
-                                    <TableCell className="font-medium text-foreground">{student.studentName}</TableCell>
-                                    <TableCell>{formatCurrency(student.totalFees)}</TableCell>
-                                    <TableCell className="text-success font-medium">
-                                        {formatCurrency(student.amountPaid)}
-                                    </TableCell>
-                                    <TableCell className="text-warning font-medium">
-                                        {formatCurrency(student.pendingAmount)}
-                                    </TableCell>
+                                <TableRow key={student.studentId}>
+                                    <TableCell>{student.admissionNumber}</TableCell>
+                                    <TableCell>{student.studentName}</TableCell>
+                                    <TableCell>{formatCurrency(student.totalFeesPerStudent)}</TableCell>
+                                    <TableCell>{formatCurrency(student.totalPaid)}</TableCell>
+                                    <TableCell>{formatCurrency(student.balance)}</TableCell>
                                     <TableCell>
                                         <Chip
                                             size="sm"
-                                            color={getStatusColor(student.paymentStatus)}
+                                            color={getStatusColor(student.status)}
                                             variant="flat"
                                         >
-                                            {student.paymentStatus}
+                                            {student.status}
                                         </Chip>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2 text-sm text-default-500">
-                                            {student.lastPaymentDate ? (
-                                                <>
-                                                    <Icon icon="mdi:calendar" size={14} />
-                                                    {format(new Date(student.lastPaymentDate), 'PPP')}
-                                                </>
-                                            ) : '-'}
-                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
+
                     </Table>
                 </CardBody>
             </Card>
+
         </div>
     );
 }

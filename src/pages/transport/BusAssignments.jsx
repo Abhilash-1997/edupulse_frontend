@@ -54,13 +54,13 @@ const BusAssignments = () => {
             ]);
 
             if (assignmentsRes.data?.success) {
-                setAssignments(assignmentsRes.data.data);
+                setAssignments(assignmentsRes.data?.data);
             }
             if (busesRes.data?.success) {
-                setBuses(busesRes.data.data);
+                setBuses(busesRes.data?.data);
             }
             if (studentsRes.data?.success) {
-                setStudents(studentsRes.data.data.students);
+                setStudents(studentsRes.data?.data);
             }
         } catch (err) {
             setError('Failed to load data');
@@ -195,16 +195,16 @@ const BusAssignments = () => {
                                                 <div className="p-2 bg-primary/10 rounded-full">
                                                     <Icon icon="mdi:account" className="text-primary" width={16} />
                                                 </div>
-                                                <span className="font-medium text-foreground">{assignment.Student?.name}</span>
+                                                <span className="font-medium text-foreground">{assignment.studentName}</span>
                                             </div>
                                         </TableCell>
-                                        <TableCell><span className="text-default-500">{assignment.Student?.admissionNumber}</span></TableCell>
+                                        <TableCell><span className="text-default-500">{assignment.admissionNumber}</span></TableCell>
                                         <TableCell>
                                             <Chip size="sm" variant="flat" color="primary" classNames={{ content: "font-medium" }}>
-                                                {assignment.Bus?.busNumber}
+                                                {assignment.busNumber}
                                             </Chip>
                                         </TableCell>
-                                        <TableCell><span className="text-foreground">{assignment.BusRoute?.routeName || '-'}</span></TableCell>
+                                        <TableCell><span className="text-foreground">{assignment.routeName || '-'}</span></TableCell>
                                         <TableCell><span className="text-default-500">{assignment.stopName || '-'}</span></TableCell>
                                         <TableCell><span className="text-default-500 font-mono">{assignment.pickupTime || '-'}</span></TableCell>
                                         <TableCell>

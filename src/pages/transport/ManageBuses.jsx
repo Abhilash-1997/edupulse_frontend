@@ -56,7 +56,7 @@ const ManageBuses = () => {
 
     const fetchStaff = async () => {
         try {
-            const response = await staffService.getAllStaff({ role: "BUS_DRIVER" });
+            const response = await staffService.getAllStaff({ roles: "BUS_DRIVER" });
             if (response.data?.success) {
                 setStaff(response.data.data || []);
             }
@@ -179,10 +179,10 @@ const ManageBuses = () => {
                                         </TableCell>
                                         <TableCell><span className="text-default-500">{bus.registrationNumber}</span></TableCell>
                                         <TableCell>
-                                            {bus.driver?.name ? (
+                                            {bus.user?.name ? (
                                                 <div className="flex items-center gap-2">
                                                     <Icon icon="mdi:account" className="text-default-400" />
-                                                    <span className="text-foreground">{bus.driver.name}</span>
+                                                    <span className="text-foreground">{bus.user?.name}</span>
                                                 </div>
                                             ) : (
                                                 <span className="text-default-400 italic">Not assigned</span>
@@ -278,8 +278,8 @@ const ManageBuses = () => {
                             labelPlacement="outside"
                         >
                             {staff.map((s) => (
-                                <SelectItem key={s.id} textValue={s.User?.name || s.name}>
-                                    {s.User?.name || s.name}
+                                <SelectItem key={s.id} textValue={s.user?.name || s.name}>
+                                    {s.user?.name || s.name}
                                 </SelectItem>
                             ))}
                         </Select>
