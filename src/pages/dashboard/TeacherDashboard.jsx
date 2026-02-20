@@ -39,7 +39,7 @@ export default function TeacherDashboard() {
         try {
             const response = await teacherService.getMyClass();
             if (response.data?.success) {
-                setMyClass(response.data.data);
+                setMyClass(response.data?.data);
             }
         } catch (error) {
         }
@@ -76,6 +76,9 @@ export default function TeacherDashboard() {
         visible: { y: 0, opacity: 1 }
     };
 
+    console.log("user ", user);
+    
+
     return (
         <motion.div
             className="p-4 md:p-6 space-y-4 md:space-y-6"
@@ -87,7 +90,7 @@ export default function TeacherDashboard() {
                 <h1 className="text-2xl md:text-3xl font-bold text-foreground">
                     Teacher Dashboard
                 </h1>
-                <p className="text-default-800">Welcome back, {user?.name}</p>
+                <p className="text-default-800">Welcome back, {user.name}</p>
             </motion.div>
 
             {/* Class Teacher Widget */}
@@ -108,10 +111,10 @@ export default function TeacherDashboard() {
                                         <div className="flex items-center gap-2 mb-2">
                                             <Chip size="sm" variant="shadow" classNames={{ base: "bg-secondary-500 text-primary-900", content: "font-bold tracking-wide" }}>CLASS TEACHER</Chip>
                                         </div>
-                                        <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">{myClass.Class?.name} - {myClass.name}</h2>
+                                        <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">{myClass.section?.className} - {myClass.section?.name}</h2>
                                         <p className="text-primary-100 mt-1 font-medium flex items-center gap-2">
                                             <Icon icon="mdi:account-group" />
-                                            {myClass.Students ? myClass.Students.length : 0} Students Assigned
+                                            {myClass.students ? myClass.students.length : 0} Students Assigned
                                         </p>
                                     </div>
                                 </div>

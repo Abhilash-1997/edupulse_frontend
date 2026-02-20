@@ -33,7 +33,7 @@ export default function ExamList() {
             const params = Object.fromEntries(searchParams.entries());
             const response = await examService.getExams(params);
             if (response.data?.success) {
-                setExams(response.data.data?.exams || []);
+                setExams(response.data?.data || []);
             }
         } catch (error) {
         } finally {
@@ -108,7 +108,7 @@ export default function ExamList() {
                         {exams.map((exam) => (
                             <TableRow key={exam.id}>
                                 <TableCell className="font-medium">{exam.name}</TableCell>
-                                <TableCell>{exam.Class?.name}</TableCell>
+                                <TableCell>{exam.classInfo?.name}</TableCell>
                                 <TableCell>{format(new Date(exam.startDate), 'PPP')}</TableCell>
                                 <TableCell>
                                     <Chip

@@ -101,7 +101,7 @@ export default function ExamResults() {
     const fetchClasses = async () => {
         try {
             const classRes = await academicService.getAllClasses();
-            if (classRes.data?.success) setClasses(classRes.data.data.classes || []);
+            if (classRes.data?.success) setClasses(classRes.data?.data || []);
         } catch (error) {
             addToast({
                 title: "Error",
@@ -147,7 +147,7 @@ export default function ExamResults() {
             if (sectionId) params.sectionId = sectionId;
 
             const response = await examService.getExams(params);
-            if (response.data?.success) setExams(response.data.data || []);
+            if (response.data?.success) setExams(response.data?.data || []);
         } catch (error) {
             console.error(error);
         }
@@ -162,8 +162,10 @@ export default function ExamResults() {
             if (selectedSection) params.sectionId = selectedSection;
 
             const response = await examService.getExamResults(params);
+            console.log("Response Exams ", response);
+            
             if (response.data?.success) {
-                setResults(response.data.data || []);
+                setResults(response.data?.data || []);
             }
         } catch (error) {
             addToast({

@@ -61,7 +61,7 @@ export default function CreateExam() {
     const fetchOptions = async () => {
         try {
             const classRes = await academicService.getAllClasses();
-            if (classRes.data?.success) setClasses(classRes.data.data.classes);
+            if (classRes.data?.success) setClasses(classRes.data?.data);
         } catch (error) {
             console.error(error);
         }

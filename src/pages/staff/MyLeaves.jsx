@@ -50,7 +50,7 @@ const MyLeaves = () => {
         try {
             const response = await leaveService.getMyLeaves();
             if (response?.data?.success) {
-                setLeaves(response.data.data || []);
+                setLeaves(response.data?.data || []);
             }
         } catch (error) {
             addToast({ title: "Error", description: "Could not load leaves", color: "danger" });
@@ -209,7 +209,6 @@ const MyLeaves = () => {
                         <TableColumn>DATES</TableColumn>
                         <TableColumn className="hidden sm:table-cell">REASON</TableColumn>
                         <TableColumn>STATUS</TableColumn>
-                        <TableColumn className="hidden md:table-cell">APPLIED ON</TableColumn>
                     </TableHeader>
                     <TableBody
                         isLoading={loading}
@@ -232,9 +231,9 @@ const MyLeaves = () => {
                                 <TableCell>
                                     <Chip color={getStatusColor(leave.status)} size="sm" variant="dot">{leave.status}</Chip>
                                 </TableCell>
-                                <TableCell className="hidden md:table-cell">
+                                {/* <TableCell className="hidden md:table-cell">
                                     <span className="text-tiny text-default-400">{formatDistanceToNow(new Date(leave.createdAt), { addSuffix: true })}</span>
-                                </TableCell>
+                                </TableCell> */}
                             </TableRow>
                         ))}
                     </TableBody>

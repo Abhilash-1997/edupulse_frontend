@@ -31,7 +31,7 @@ export default function MyClassTimetable() {
         fetchTimetable();
     }, []);
 
-    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const days = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
     // Generate simple time slots for grid if needed, or just list.
     // For a better view, let's group by Day similar to MyPeriods but emphasized as "Class Schedule".
 
@@ -44,6 +44,9 @@ export default function MyClassTimetable() {
     }
 
     const { classDetails, timetable } = timetableData || {};
+
+    console.log("classDetails ", classDetails);
+    
 
     const groupedTimetable = days.reduce((acc, day) => {
         if (timetable) {
@@ -77,7 +80,7 @@ export default function MyClassTimetable() {
                         </h1>
                         {classDetails && (
                             <p className="text-default-500">
-                                Class: <span className="font-semibold text-primary">{classDetails.name} - {classDetails.section}</span>
+                                Class: <span className="font-semibold text-primary">{classDetails.className} - {classDetails.name}</span>
                             </p>
                         )}
                     </div>
@@ -104,6 +107,8 @@ export default function MyClassTimetable() {
                     {days.map(day => {
                         const slots = groupedTimetable[day] || [];
                         if (slots.length === 0) return null;
+                        console.log("Slots ", slots);
+                        
 
                         return (
                             <Card key={day} className="h-full shadow-sm bg-content1 border border-default-200">
@@ -125,14 +130,12 @@ export default function MyClassTimetable() {
                                                 </div>
                                                 <div className="flex-1">
                                                     <div className="font-semibold text-primary">
-                                                        {slot.Subject?.name}
+                                                        {slot.subject?.name}
                                                     </div>
-                                                    {slot.User && (
                                                         <div className="text-sm text-default-500 flex items-center gap-1">
                                                             <Icon icon="mdi:account-tie" className="text-xs" />
-                                                            <span>Teacher: {slot.User.name || 'Unknown'}</span>
+                                                            <span>Teacher: {slot.teacher?.name || 'Unknown'}</span>
                                                         </div>
-                                                    )}
                                                 </div>
                                             </div>
                                         ))}

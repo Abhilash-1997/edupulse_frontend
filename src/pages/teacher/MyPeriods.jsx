@@ -30,7 +30,7 @@ export default function MyPeriods() {
         fetchPeriods();
     }, []);
 
-    const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const daysOrder = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
 
     const groupedPeriods = daysOrder.reduce((acc, day) => {
         let dayPeriods = periods.filter(p => p.dayOfWeek === day);
@@ -44,6 +44,9 @@ export default function MyPeriods() {
         }
         return acc;
     }, {});
+
+    console.log("Grouped Periods , " ,groupedPeriods);
+    
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -123,7 +126,7 @@ export default function MyPeriods() {
                                         <div key={period.id} className="p-4 hover:bg-default-50 transition-colors">
                                             <div className="flex justify-between items-start mb-2">
                                                 <div className="font-semibold text-foreground">
-                                                    {period.Subject?.name || "Subject"}
+                                                    {period.subject?.name || "Subject"}
                                                 </div>
                                                 <div className="text-xs font-mono bg-default-100 text-default-600 px-2 py-1 rounded">
                                                     {period.startTime ? period.startTime.slice(0, 5) : ''} - {period.endTime ? period.endTime.slice(0, 5) : ''}
@@ -132,7 +135,7 @@ export default function MyPeriods() {
                                             <div className="flex justify-between items-center text-sm text-default-500">
                                                 <div className="flex items-center gap-2">
                                                     <Icon icon="mdi:google-classroom" />
-                                                    <span>{period.ClassSection?.Class?.name} - {period.ClassSection?.name}</span>
+                                                    <span>{period.section?.className} - {period.section?.name}</span>
                                                 </div>
                                                 {period.classroom && (
                                                     <div className="flex items-center gap-1">

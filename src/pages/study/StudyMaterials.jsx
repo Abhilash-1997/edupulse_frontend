@@ -97,11 +97,14 @@ export default function StudyMaterials() {
                 academicService.getAllSections() // To find current section details
             ]);
 
-            if (classesRes.data?.success) setAllClasses(classesRes.data.data?.classes || []);
-            if (subjectsRes.data?.success) setSubjects(subjectsRes.data.data?.subjects || []);
+            if (classesRes.data?.success) setAllClasses(classesRes.data?.data || []);
+            if (subjectsRes.data?.success) setSubjects(subjectsRes.data?.data || []);
 
             if (sectionsRes.data?.success && sectionId) {
                 const foundSection = (sectionsRes.data.data || []).find(s => s.id === sectionId);
+
+                console.log("foundSection  ,, ",foundSection);
+                
                 if (foundSection) {
                     setCurrentSection(foundSection);
                     // Pre-fill form if found
@@ -168,7 +171,7 @@ export default function StudyMaterials() {
                     </Link>
                     <div className="text-center sm:text-left">
                         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
-                            {currentSection ? `Study Materials - ${currentSection.Class?.name} ${currentSection.name}` : "Study Materials"}
+                            {currentSection ? `Study Materials - ${currentSection.className} ${currentSection.name}` : "Study Materials"}
                         </h1>
                         <p className="text-xs sm:text-sm text-default-500 mt-1">Access and manage course contents</p>
                     </div>

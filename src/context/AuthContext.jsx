@@ -20,6 +20,8 @@ export const AuthProvider = ({ children }) => {
             if (token && storedUser) {
                 try {
                     const parsedUser = JSON.parse(storedUser);
+                    console.log("StoredUser -=-=-=-=- ", storedUser);
+                    
                     setUser(parsedUser);
                     setIsAuthenticated(true);
                 } catch (error) {
@@ -80,7 +82,7 @@ export const AuthProvider = ({ children }) => {
  * @returns {Object} Auth context value
  */
 export const useAuth = () => {
-    const context = useContext(AuthContext);
+    const context = useContext(AuthContext);   
     if (!context) {
         throw new Error('useAuth must be used within an AuthProvider');
     }

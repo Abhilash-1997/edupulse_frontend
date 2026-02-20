@@ -50,11 +50,13 @@ export default function ChildFees() {
         try {
             setIsLoading(true);
             const response = await parentService.getMyChildren();
+
             if (response.data?.success) {
-                const kids = response.data.data?.students || [];
+                const kids = response.data?.data?.children || [];
                 setChildren(kids);
+
                 if (kids.length > 0) {
-                    setSelectedChild(kids[0].id);
+                    setSelectedChild(kids[0].student.id);
                 }
             }
         } catch (error) {
@@ -74,8 +76,7 @@ export default function ChildFees() {
             if (response.data?.success) {
                 setFeeDetails(response.data.data);
             }
-        } catch (error) {
-        }
+        } catch (error) {}
     };
 
     const handlePayment = (fee) => {
@@ -88,6 +89,7 @@ export default function ChildFees() {
 
         try {
             setIsPaymentProcessing(true);
+
             const response = await financeService.processPayment({
                 studentId: selectedChild,
                 feeStructureId: selectedFee.feeStructureId,
@@ -120,13 +122,12 @@ export default function ChildFees() {
         }
     };
 
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-IN', {
+    const formatCurrency = (amount) =>
+        new Intl.NumberFormat('en-IN', {
             style: 'currency',
             currency: 'INR',
             maximumFractionDigits: 0
         }).format(amount);
-    };
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -139,14 +140,16 @@ export default function ChildFees() {
 
     return (
         <div className="p-6 space-y-6">
+
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex justify-between items-start">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Children's Fees</h1>
-                    <p className="text-gray-600 dark:text-gray-400 mt-1">
+                    <h1 className="text-3xl font-bold">Children's Fees</h1>
+                    <p className="text-gray-600 mt-1">
                         View and pay fees for your children
                     </p>
                 </div>
+
                 <Button
                     color="primary"
                     variant="flat"
@@ -171,9 +174,12 @@ export default function ChildFees() {
                             onChange={(e) => setSelectedChild(e.target.value)}
                             startContent={<Icon icon="mdi:account-child" />}
                         >
-                            {children.map((child) => (
-                                <SelectItem key={child.id} value={child.id}>
-                                    {child.name} - {child.admissionNumber}
+                            {children.map((childWrapper) => (
+                                <SelectItem
+                                    key={childWrapper.student.id}
+                                    value={childWrapper.student.id}
+                                >
+                                    {childWrapper.student.name} - {childWrapper.student.admissionNumber}
                                 </SelectItem>
                             ))}
                         </Select>
@@ -181,80 +187,45 @@ export default function ChildFees() {
                 </Card>
             )}
 
-            {/* Summary Cards with Borders */}
+            {/* Summary Cards */}
             {feeDetails && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <motion.div whileHover={{ scale: 1.02 }}>
-                        <Card className="border-l-4 border-l-blue-500">
-                            <CardBody className="p-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">Total Fees</p>
-                                        <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                                            {formatCurrency(feeDetails.summary.totalFees)}
-                                        </p>
-                                    </div>
-                                    <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-lg">
-                                        <Icon icon="mdi:currency-usd" className="text-2xl text-blue-600 dark:text-blue-400" />
-                                    </div>
-                                </div>
-                            </CardBody>
-                        </Card>
-                    </motion.div>
+                    <Card className="border-l-4 border-l-blue-500">
+                        <CardBody>
+                            <p>Total Fees</p>
+                            <p className="text-2xl font-bold">
+                                {formatCurrency(feeDetails.summary.totalFees)}
+                            </p>
+                        </CardBody>
+                    </Card>
 
-                    <motion.div whileHover={{ scale: 1.02 }}>
-                        <Card className="border-l-4 border-l-success">
-                            <CardBody className="p-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">Paid</p>
-                                        <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                                            {formatCurrency(feeDetails.summary.totalPaid)}
-                                        </p>
-                                    </div>
-                                    <div className="bg-success-100 dark:bg-success-900/30 p-3 rounded-lg">
-                                        <Icon icon="mdi:check-circle" className="text-2xl text-success-600 dark:text-success-400" />
-                                    </div>
-                                </div>
-                            </CardBody>
-                        </Card>
-                    </motion.div>
+                    <Card className="border-l-4 border-l-success">
+                        <CardBody>
+                            <p>Paid</p>
+                            <p className="text-2xl font-bold">
+                                {formatCurrency(feeDetails.summary.totalPaid)}
+                            </p>
+                        </CardBody>
+                    </Card>
 
-                    <motion.div whileHover={{ scale: 1.02 }}>
-                        <Card className="border-l-4 border-l-warning">
-                            <CardBody className="p-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">Pending</p>
-                                        <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                                            {formatCurrency(feeDetails.summary.totalPending)}
-                                        </p>
-                                    </div>
-                                    <div className="bg-warning-100 dark:bg-warning-900/30 p-3 rounded-lg">
-                                        <Icon icon="mdi:alert-circle" className="text-2xl text-warning-600 dark:text-warning-400" />
-                                    </div>
-                                </div>
-                            </CardBody>
-                        </Card>
-                    </motion.div>
+                    <Card className="border-l-4 border-l-warning">
+                        <CardBody>
+                            <p>Pending</p>
+                            <p className="text-2xl font-bold">
+                                {formatCurrency(feeDetails.summary.totalPending)}
+                            </p>
+                        </CardBody>
+                    </Card>
                 </div>
             )}
 
-            {/* Fee Structures */}
+            {/* Fee Table */}
             <Card>
                 <CardHeader>
-                    <div className="flex items-center gap-3">
-                        <Icon icon="mdi:file-document-multiple" size={24} className="text-primary" />
-                        <div>
-                            <h2 className="text-xl font-bold">Fee Structure</h2>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                {feeDetails?.feeBreakdown?.length || 0} fee{feeDetails?.feeBreakdown?.length !== 1 ? 's' : ''} applicable
-                            </p>
-                        </div>
-                    </div>
+                    <h2 className="text-xl font-bold">Fee Structure</h2>
                 </CardHeader>
                 <CardBody className="p-0">
-                    <Table aria-label="Fee structure table" removeWrapper className='px-2'>
+                    <Table removeWrapper>
                         <TableHeader>
                             <TableColumn>FEE NAME</TableColumn>
                             <TableColumn>AMOUNT</TableColumn>
@@ -264,20 +235,18 @@ export default function ChildFees() {
                             <TableColumn>STATUS</TableColumn>
                             <TableColumn>ACTION</TableColumn>
                         </TableHeader>
-                        <TableBody
-                            emptyContent="No fees found"
-                            isLoading={isLoading}
-                            loadingContent={<Spinner label="Loading fees..." />}
-                        >
+                        <TableBody>
                             {(feeDetails?.feeBreakdown || []).map((fee) => (
                                 <TableRow key={fee.feeStructureId}>
-                                    <TableCell className="font-medium">{fee.feeName}</TableCell>
+                                    <TableCell>{fee.feeName}</TableCell>
                                     <TableCell>{formatCurrency(fee.amount)}</TableCell>
                                     <TableCell>
-                                        <Chip size="sm" variant="flat" color="primary">{fee.frequency}</Chip>
+                                        <Chip size="sm" variant="flat" color="primary">
+                                            {fee.frequency}
+                                        </Chip>
                                     </TableCell>
-                                    <TableCell className="text-green-600 font-medium">{formatCurrency(fee.totalPaid)}</TableCell>
-                                    <TableCell className="text-orange-600 font-medium">{formatCurrency(fee.pendingAmount)}</TableCell>
+                                    <TableCell>{formatCurrency(fee.totalPaid)}</TableCell>
+                                    <TableCell>{formatCurrency(fee.pendingAmount)}</TableCell>
                                     <TableCell>
                                         <Chip size="sm" color={getStatusColor(fee.status)} variant="flat">
                                             {fee.status}
@@ -302,112 +271,35 @@ export default function ChildFees() {
                 </CardBody>
             </Card>
 
-            {/* Payment History */}
-            <Card>
-                <CardHeader>
-                    <div className="flex items-center gap-3">
-                        <Icon icon="mdi:history" size={24} className="text-primary" />
-                        <div>
-                            <h2 className="text-xl font-bold">Payment History</h2>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                {feeDetails?.paymentHistory?.length || 0} payment{feeDetails?.paymentHistory?.length !== 1 ? 's' : ''} made
-                            </p>
-                        </div>
-                    </div>
-                </CardHeader>
-                <CardBody className="p-0">
-                    <Table aria-label="Payment history table" removeWrapper className='px-2'>
-                        <TableHeader>
-                            <TableColumn>DATE</TableColumn>
-                            <TableColumn>FEE NAME</TableColumn>
-                            <TableColumn>AMOUNT PAID</TableColumn>
-                            <TableColumn>TRANSACTION ID</TableColumn>
-                            <TableColumn>STATUS</TableColumn>
-                        </TableHeader>
-                        <TableBody emptyContent="No payment history" isLoading={isLoading}>
-                            {(feeDetails?.paymentHistory || []).map((payment) => (
-                                <TableRow key={payment.id}>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                            <Icon icon="mdi:calendar" size={14} />
-                                            {format(new Date(payment.paymentDate), 'PPP')}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>{payment.feeName}</TableCell>
-                                    <TableCell className="text-green-600 font-medium">
-                                        {formatCurrency(payment.amountPaid)}
-                                    </TableCell>
-                                    <TableCell>
-                                        <code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
-                                            {payment.transactionId}
-                                        </code>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Chip size="sm" color="success" variant="flat">{payment.status}</Chip>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardBody>
-            </Card>
-
-            {/* Payment Confirmation Modal */}
+            {/* Payment Modal */}
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader>
-                                <div className="flex items-center gap-2">
-                                    <Icon icon="mdi:cash" className="text-primary" />
-                                    <span>Confirm Payment</span>
-                                </div>
-                            </ModalHeader>
-                            <ModalBody>
-                                {selectedFee && (
-                                    <div className="space-y-4">
-                                        <p className="text-gray-600 dark:text-gray-400">
-                                            You are about to pay the following fee:
-                                        </p>
-                                        <Card className="bg-gray-50 dark:bg-gray-800">
-                                            <CardBody>
-                                                <div className="space-y-2">
-                                                    <div className="flex justify-between">
-                                                        <span className="text-gray-600 dark:text-gray-400">Fee Name:</span>
-                                                        <span className="font-medium">{selectedFee.feeName}</span>
-                                                    </div>
-                                                    <div className="flex justify-between">
-                                                        <span className="text-gray-600 dark:text-gray-400">Amount:</span>
-                                                        <span className="font-bold text-lg text-green-600">
-                                                            {formatCurrency(selectedFee.pendingAmount)}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </CardBody>
-                                        </Card>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            This is a dummy payment. In production, this will integrate with Razorpay.
-                                        </p>
-                                    </div>
-                                )}
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="danger" variant="light" onPress={onClose}>
-                                    Cancel
-                                </Button>
-                                <Button
-                                    color="primary"
-                                    onPress={processPayment}
-                                    isLoading={isPaymentProcessing}
-                                    startContent={!isPaymentProcessing && <Icon icon="mdi:check-bold" />}
-                                >
-                                    Confirm Payment
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
+                    <ModalHeader>Confirm Payment</ModalHeader>
+                    <ModalBody>
+                        {selectedFee && (
+                            <div>
+                                <p>{selectedFee.feeName}</p>
+                                <p className="font-bold text-lg">
+                                    {formatCurrency(selectedFee.pendingAmount)}
+                                </p>
+                            </div>
+                        )}
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button variant="light" onPress={onClose}>
+                            Cancel
+                        </Button>
+                        <Button
+                            color="primary"
+                            onPress={processPayment}
+                            isLoading={isPaymentProcessing}
+                        >
+                            Confirm Payment
+                        </Button>
+                    </ModalFooter>
                 </ModalContent>
             </Modal>
+
         </div>
     );
 }

@@ -132,7 +132,7 @@ const LeaveManagement = () => {
                 }}
             >
                 <Tab key="PENDING" title={<div className="flex items-center space-x-2"><span>Pending Requests</span></div>} >
-                    <LeavesTable leaves={leaves} type="PENDING" loading={loading} />
+                    <LeavesTable leaves={leaves} type="PENDING" loading={loading} onActionClick={handleActionClick}/>
                 </Tab>
                 <Tab key="HISTORY" title={<div className="flex items-center space-x-2"><span>History</span></div>} >
                     <LeavesTable leaves={leaves} type="HISTORY" loading={loading} />
@@ -172,7 +172,7 @@ const LeaveManagement = () => {
     );
 };
 
-const LeavesTable = ({ leaves, type, loading }) => {
+const LeavesTable = ({ leaves, type, loading, onActionClick  }) => {
     const getStatusColor = (status) => {
         switch (status) {
             case "PENDING": return "warning";
@@ -205,8 +205,8 @@ const LeavesTable = ({ leaves, type, loading }) => {
                     <TableRow key={leave.id} as={motion.tr} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.05 }}>
                         <TableCell>
                             <div>
-                                <p className="font-semibold">{leave.User?.name || "Unknown"}</p>
-                                <p className="text-tiny text-default-500">{leave.User?.email}</p>
+                                <p className="font-semibold">{leave.applicant?.name || "Unknown"}</p>
+                                <p className="text-tiny text-default-500">{leave.applicant?.email}</p>
                                 <Chip size="sm" variant="flat" className="mt-1">{leave.role}</Chip>
                             </div>
                         </TableCell>
@@ -232,8 +232,8 @@ const LeavesTable = ({ leaves, type, loading }) => {
                             <TableCell>
                                 {leave.status === "PENDING" && (
                                     <div className="flex gap-2">
-                                        <Button size="sm" color="success" onPress={() => handleActionClick(leave, "APPROVED")}>Approve</Button>
-                                        <Button size="sm" color="danger" variant="flat" onPress={() => handleActionClick(leave, "REJECTED")}>Reject</Button>
+                                        <Button size="sm" color="success" onPress={() => onActionClick(leave, "APPROVED")}>Approve</Button>
+                                        <Button size="sm" color="danger" variant="flat" onPress={() => onActionClick(leave, "REJECTED")}>Reject</Button>
                                     </div>
                                 )}
                             </TableCell>

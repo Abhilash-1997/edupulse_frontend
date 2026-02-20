@@ -52,10 +52,10 @@ export default function AddExamResult() {
             ]);
 
             if (examRes.data?.success) {
-                setExams(examRes.data.data?.exams || []);
+                setExams(examRes.data?.data || []);
             }
             if (subjectRes.data?.success) {
-                setSubjects(subjectRes.data.data.subjects || []);
+                setSubjects(subjectRes.data?.data || []);
             }
         } catch (error) {
             addToast({
@@ -77,8 +77,10 @@ export default function AddExamResult() {
         }
 
         const exam = exams.find(ex => ex.id === examId);
-        if (exam && exam.classId) {
-            fetchStudents(exam.classId);
+        console.log("Exam finded ---------->", exam);
+        
+        if (exam && exam.classInfo?.id) {
+            fetchStudents(exam.classInfo?.id);
         }
     };
 
@@ -87,7 +89,7 @@ export default function AddExamResult() {
         try {
             const response = await studentService.getAllStudents({ classId });
             if (response.data?.success) {
-                setStudents(response.data.data?.students || []);
+                setStudents(response.data?.data || []);
                 // Marks data will be populated by fetchExistingMarks via useEffect
             } else {
                 setStudents([]);

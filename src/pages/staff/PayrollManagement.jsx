@@ -123,6 +123,8 @@ const PayrollManagement = () => {
         setLoadingStaff(true);
         try {
             const response = await staffService.getAllStaff();
+            console.log("Response ++++++++++++++ ", response);
+            
             if (response.data?.success) {
                 setStaffList(response.data.data || []);
             }
@@ -319,8 +321,8 @@ const PayrollManagement = () => {
                                             <TableRow key={record.id}>
                                                 <TableCell>
                                                     <div>
-                                                        <p className="font-medium">{record.StaffProfile?.User?.name || "Unknown"}</p>
-                                                        <p className="text-tiny text-default-500">{record.StaffProfile?.employeeCode}</p>
+                                                        <p className="font-medium">{record.staff?.user?.name || "Unknown"}</p>
+                                                        <p className="text-tiny text-default-500">{record.staff?.employeeCode}</p>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>₹{record.basicSalary}</TableCell>
@@ -337,7 +339,7 @@ const PayrollManagement = () => {
                                                         variant="light"
                                                         color="primary"
                                                         startContent={<Icon icon="lucide:download" />}
-                                                        onPress={() => handleDownloadPayslip(record.id, record.StaffProfile?.User?.name)}
+                                                        onPress={() => handleDownloadPayslip(record.id, record.staff?.user?.name)}
                                                     >
                                                         Payslip
                                                     </Button>
@@ -377,10 +379,10 @@ const PayrollManagement = () => {
                                                 variant="bordered"
                                             >
                                                 {staffList.map((s) => (
-                                                    <SelectItem key={s.StaffProfile?.id} value={s.StaffProfile?.id} textValue={s.name}>
+                                                    <SelectItem key={s.id} value={s.id} textValue={s.user?.name}>
                                                         <div className="flex flex-col">
                                                             <span className="text-small">{s.name}</span>
-                                                            <span className="text-tiny text-default-400">{s.StaffProfile?.employeeCode || "No Code"}</span>
+                                                            <span className="text-tiny text-default-400">{s.employeeCode || "No Code"}</span>
                                                         </div>
                                                     </SelectItem>
                                                 ))}
