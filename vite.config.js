@@ -4,7 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import tailwindcss from '@tailwindcss/vite'
 
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -22,5 +21,17 @@ export default defineConfig(() => {
         "@": path.resolve(__dirname, "src"),
       },
     },
+
+    // ✅ ADD THIS PART
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:8080', // Spring Boot port
+          changeOrigin: true,
+          secure: false,
+        }
+      }
+    }
+
   };
 });

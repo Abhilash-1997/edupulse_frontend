@@ -42,18 +42,11 @@ export default function VideoPlayer() {
     const initializePlayer = (src, token) => {
         const video = videoRef.current;
         if (!video) return;
-
-        // Use base URL for HLS src if needed, but here src is full relative URL from backend
-        // e.g., /api/study-materials/hls/master.m3u8
-
+        const securedSrc = `${src}?token=${token}`;
         if (Hls.isSupported()) {
-            const hls = new Hls({
-                xhrSetup: function (xhr, url) {
-                    xhr.setRequestHeader('x-stream-token', token);
-                }
-            });
+            const hls = new Hls();
             window.hls = hls; // Save to window for cleanup
-            hls.loadSource(src);
+            hls.loadSource(securedSrc);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, function () {
                 setLoading(false);
