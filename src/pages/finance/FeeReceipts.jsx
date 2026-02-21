@@ -253,7 +253,7 @@ export default function FeeReceipts() {
                             >
                                 {classes.map((c) => (
                                     <SelectItem key={String(c.id)}>
-                                        {c.name} {c.section}
+                                        {c.name}
                                     </SelectItem>
                                 ))}
                             </Select>

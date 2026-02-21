@@ -61,6 +61,34 @@ const Schools = () => {
         }
     };
 
+    const handleStatusChange = async (schoolId, newStatus) => {
+        try {
+            const response = await dashboardService.updateSchoolStatus(schoolId, newStatus);
+            if (response.data?.success) {
+                addToast({
+                    title: "Success",
+                    description: `School status updated to ${newStatus}`,
+                    color: "success"
+                });
+                setSchools(prev =>
+                    prev.map(s => s.id === schoolId ? { ...s, status: newStatus } : s)
+                );
+            } else {
+                addToast({
+                    title: "Error",
+                    description: response.data?.message || "Failed to update status",
+                    color: "danger"
+                });
+            }
+        } catch (error) {
+            addToast({
+                title: "Error",
+                description: "An unexpected error occurred",
+                color: "danger"
+            });
+        }
+    };
+
     const onSearchChange = (value) => {
         setFilterValue(value);
     };
@@ -106,7 +134,7 @@ const Schools = () => {
             case "admin":
                 return (
                     <div className="flex flex-col">
-                        <p className="text-bold text-small capitalize">{school.adminEmail || 'No Admin'}</p>
+                        <p className="text-bold text-small capitalize">{school.schoolAdminEmail || 'No Admin'}</p>
                         <p className="text-bold text-tiny text-default-400">School Admin</p>
                     </div>
                 );
@@ -135,14 +163,31 @@ const Schools = () => {
                 );
             case "status":
                 return (
-                    <Chip
-                        className="capitalize"
-                        color={school.status === "active" ? "success" : "danger"}
-                        size="sm"
-                        variant="flat"
-                    >
-                        {school.status}
-                    </Chip>
+                    <Dropdown>
+                        <DropdownTrigger>
+                            <Chip
+                                className="capitalize cursor-pointer"
+                                color={
+                                    school.status === "ACTIVE" ? "success" :
+                                        school.status === "INACTIVE" ? "danger" : "warning"
+                                }
+                                size="sm"
+                                variant="flat"
+                                endContent={<Icon icon="mdi:chevron-down" className="text-sm" />}
+                            >
+                                {school.status}
+                            </Chip>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                            aria-label="Status options"
+                            onAction={(key) => handleStatusChange(school.id, key)}
+                            disabledKeys={[school.status]}
+                        >
+                            <DropdownItem key="ACTIVE" startContent={<Icon icon="mdi:check-circle" className="text-success" />}>Active</DropdownItem>
+                            <DropdownItem key="PENDING" startContent={<Icon icon="mdi:clock-outline" className="text-warning" />}>Pending</DropdownItem>
+                            <DropdownItem key="INACTIVE" startContent={<Icon icon="mdi:close-circle" className="text-danger" />}>Inactive</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
                 );
             case "actions":
                 return (

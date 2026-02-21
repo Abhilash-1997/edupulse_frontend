@@ -26,6 +26,7 @@ import ChildDashboard from '@/pages/dashboard/ChildDashboard';
 import BulkUploadPage from '@/pages/admin/BulkUploadPage';
 import Schools from '@/pages/admin/Schools';
 import SchoolSettings from '@/pages/admin/SchoolSettings';
+import GradeRules from '@/pages/admin/GradeRules';
 
 
 
@@ -143,6 +144,7 @@ function App() {
               <Route path="admin/bulk-upload/:type" element={<ProtectedRoute><BulkUploadPage /></ProtectedRoute>} />
               <Route path="admin/schools" element={<ProtectedRoute><Schools /></ProtectedRoute>} />
               <Route path="school/settings" element={<ProtectedRoute><SchoolSettings /></ProtectedRoute>} />
+              <Route path="admin/grade-rules" element={<ProtectedRoute><GradeRules /></ProtectedRoute>} />
               <Route path="settings/update-password" element={<ProtectedRoute><UpdatePassword /></ProtectedRoute>} />
 
               <Route path="parent/child/:studentId" element={<ProtectedRoute><ChildDashboard /></ProtectedRoute>} />
@@ -198,7 +200,7 @@ function App() {
               <Route path="library/issue" element={<ProtectedRoute><IssueBook /></ProtectedRoute>} />
               <Route path="library/return" element={<ProtectedRoute><ReturnBook /></ProtectedRoute>} />
               <Route path="library/renew" element={<ProtectedRoute><RenewBook /></ProtectedRoute>} />
-              <Route path="library/section/:sectionId/books" element={<ProtectedRoute><SectionBooks /></ProtectedRoute>} />
+              <Route path="library/section/:id/books" element={<ProtectedRoute><SectionBooks /></ProtectedRoute>} />
               <Route path="library/book/:id" element={<ProtectedRoute><BookDetails /></ProtectedRoute>} />
 
               {/* Transport / Bus Tracking */}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, addToast } from "@heroui/react";
+import { Input, Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, addToast, Card, CardBody } from "@heroui/react";
 import libraryService from '@/services/libraryService';
 
 export default function RenewBook() {
@@ -32,7 +32,7 @@ export default function RenewBook() {
             setIsLoading(true);
             const response = await libraryService.renewBook({
                 transactionId: selectedTx.id,
-                newDueDate
+                newDueDate: newDueDate + "T00:00:00"
             });
             if (response.data?.success) {
                 addToast({ title: "Success", description: "Book renewed successfully", color: "success" });
@@ -70,12 +70,12 @@ export default function RenewBook() {
                             {transactions.map(tx => (
                                 <TableRow key={tx.id} className="border-b border-default-100 last:border-none">
                                     <TableCell>
-                                        <p className="font-semibold text-foreground">{tx.Book.title}</p>
+                                        <p className="font-semibold text-foreground">{tx.bookTitle}</p>
                                     </TableCell>
                                     <TableCell>
-                                        <p className="text-foreground">{tx.User?.name || tx.Student?.name}</p>
+                                        <p className="text-foreground">{tx.user?.name || tx.student?.name}</p>
                                         <p className="text-xs text-default-500">
-                                            {tx.User ? tx.User.role : `Student (${tx.Student?.admissionNumber})`}
+                                            {tx.User ? tx.User.role : `Student (${tx.student?.admissionNumber})`}
                                         </p>
                                     </TableCell>
                                     <TableCell className="text-foreground">
@@ -95,7 +95,7 @@ export default function RenewBook() {
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
                     <div className="bg-content1 p-6 rounded-lg shadow-xl w-96 border border-default-200">
                         <h3 className="text-xl font-bold mb-4 text-foreground">Confirm Renewal</h3>
-                        <p className="text-default-700"><strong>Book:</strong> {selectedTx.Book.title}</p>
+                        <p className="text-default-700"><strong>Book:</strong> {selectedTx.bookTitle}</p>
 
                         <div className="mt-6">
                             <Input

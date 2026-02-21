@@ -6,14 +6,7 @@ import { motion } from "framer-motion";
 
 export default function SystemAdminDashboard() {
     const [loading, setLoading] = useState(true);
-    const [stats, setStats] = useState({
-        counts: {
-            schools: 0,
-            users: 0,
-            revenue: 0,
-        },
-        recentSchools: []
-    });
+    const [stats, setStats] = useState({});
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -33,7 +26,7 @@ export default function SystemAdminDashboard() {
     const statCards = [
         {
             title: 'Registered Schools',
-            value: stats.counts.schools,
+            value: stats.totalSchools,
             icon: 'mdi:domain',
             color: 'text-primary-600 dark:text-primary-400',
             bgColor: 'bg-primary-100 dark:bg-primary-500/20',
@@ -41,7 +34,7 @@ export default function SystemAdminDashboard() {
         },
         {
             title: 'Total Revenue',
-            value: `$${stats.counts.revenue}`,
+            value: `$${stats.totalRevenue}`,
             icon: 'mdi:currency-usd',
             color: 'text-success-600 dark:text-success-400',
             bgColor: 'bg-success-100 dark:bg-success-500/20',
@@ -49,7 +42,7 @@ export default function SystemAdminDashboard() {
         },
         {
             title: 'Total Users',
-            value: stats.counts.users,
+            value: stats.totalUsers,
             icon: 'mdi:account-group',
             color: 'text-secondary-600 dark:text-secondary-400',
             bgColor: 'bg-secondary-100 dark:bg-secondary-500/20',

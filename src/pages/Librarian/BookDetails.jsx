@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Button, addToast } from "@heroui/react";
 import libraryService from '@/services/libraryService';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Icon } from '@iconify/react';
 
 export default function BookDetails() {
     const { id } = useParams();
@@ -28,6 +29,11 @@ export default function BookDetails() {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        console.log("Book ", book);
+        
+    },[book])
 
     if (isLoading) return <div className="p-6">Loading...</div>;
     if (!book) return <div className="p-6">Book not found</div>;
@@ -59,7 +65,7 @@ export default function BookDetails() {
                             </div>
                             <div>
                                 <p className="text-sm text-default-500 uppercase tracking-wider">Section</p>
-                                <p className="font-semibold text-primary">{book.LibrarySection?.name}</p>
+                                <p className="font-semibold text-primary">{book.sectionName}</p>
                             </div>
                         </div>
 
@@ -102,12 +108,12 @@ export default function BookDetails() {
                                 <TableColumn>FINE</TableColumn>
                             </TableHeader>
                             <TableBody emptyContent="No history for this book.">
-                                {book.LibraryTransactions?.map((tx) => (
+                                {book.libraryTransactions?.map((tx) => (
                                     <TableRow key={tx.id} className="border-b border-default-100 last:border-none">
                                         <TableCell>
-                                            <p className="font-semibold text-foreground">{tx.User?.name || tx.Student?.name}</p>
+                                            <p className="font-semibold text-foreground">{tx.user?.name || tx.student?.name}</p>
                                             <p className="text-xs text-default-500">
-                                                {tx.User ? `${tx.User.role} (${tx.User.email})` : `Student (${tx.Student?.admissionNumber})`}
+                                                {tx.user ? `${tx.user?.role} (${tx.user?.email})` : `Student (${tx.student?.admissionNumber})`}
                                             </p>
                                         </TableCell>
                                         <TableCell>{new Date(tx.issueDate).toLocaleDateString()}</TableCell>

@@ -39,6 +39,7 @@ const studentSchema = z.object({
   dob: z.string().min(1, "Date of Birth is required"),
   gender: z.enum(["Male", "Female", "Other"]),
   sectionId: z.string().optional(),
+  classId: z.string().optional(),
 });
 
 export default function StudentList() {
@@ -114,7 +115,7 @@ export default function StudentList() {
     try {
       const params = Object.fromEntries(searchParams.entries());
       console.log("params ", params);
-      
+
       const response = await studentService.getAllStudents(params);
       if (response.data?.success) {
         let data = response.data.data;
@@ -137,7 +138,7 @@ export default function StudentList() {
       if (response.data?.success) {
         setStandards(response.data.data || []);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const fetchAllSections = async () => {
@@ -146,7 +147,7 @@ export default function StudentList() {
       if (response.data?.success) {
         setAllSections(response.data.data || []);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleStandardChange = async (std) => {
@@ -158,11 +159,11 @@ export default function StudentList() {
     setIsDivisionsLoading(true);
     try {
       const response = await academicService.getDivisions(std);
-      console.log("Response,,, ----------> ",response.data.data);
+      console.log("Response,,, ----------> ", response.data.data);
       if (response.data?.success) {
         setDivisions(response.data.data || []);
       }
-      
+
     } catch (error) {
       addToast({
         title: "Error",
@@ -362,6 +363,10 @@ export default function StudentList() {
     visible: { y: 0, opacity: 1 },
   };
 
+  useEffect(() => {
+    console.log("Standards ", standards);
+  }, [])
+
   return (
     <motion.div
       className="space-y-6 p-6"
@@ -466,7 +471,7 @@ export default function StudentList() {
               </TableHeader>
               <TableBody emptyContent={"No students found"} isLoading={loading}>
                 {students.map((student) => {
-                  
+
                   return (
                     <TableRow key={student.id}>
                       <TableCell>
@@ -600,12 +605,15 @@ export default function StudentList() {
                     label="Standard"
                     placeholder="Select Standard"
                     variant="bordered"
-                    selectedKeys={selectedStandard ? [selectedStandard] : []}
-                    onChange={(e) => handleStandardChange(e.target.value)}
+                    selectedKeys={selectedStandard ? new Set([selectedStandard]) : new Set()}
+                    onSelectionChange={(keys) => {
+                      const selected = Array.from(keys)[0] || "";
+                      handleStandardChange(selected);
+                    }}
                   >
                     {standards.map((std) => (
                       <SelectItem key={std} value={std}>
-                        {std} Standard
+                        {std}
                       </SelectItem>
                     ))}
                   </Select>
@@ -620,13 +628,21 @@ export default function StudentList() {
                     }
                     variant="bordered"
                     isDisabled={!selectedStandard || isDivisionsLoading}
-                    {...register("sectionId")}
+                    isLoading={isDivisionsLoading}
                     isInvalid={!!errors.sectionId}
                     errorMessage={errors.sectionId?.message}
+                    onSelectionChange={(keys) => {
+                      const selectedId = Array.from(keys)[0] || "";
+                      setValue("sectionId", selectedId);
+                      const selectedDiv = divisions.find((d) => d.id === selectedId);
+                      if (selectedDiv) {
+                        setValue("classId", selectedDiv.classId);
+                      }
+                    }}
                   >
                     {divisions.map((div) => (
                       <SelectItem key={div.id} value={div.id}>
-                        {div.section}
+                        {div.name}
                       </SelectItem>
                     ))}
                   </Select>
@@ -669,12 +685,12 @@ export default function StudentList() {
                   onChange={(e) => {
                     const sectionId = e.target.value
                     const section = allSections.find((section) => sectionId === section.id);
-                    setTargetSection({id: section.id, classId: section.classId});
+                    setTargetSection({ id: section.id, classId: section.classId });
                   }}
                 >
                   {(sec) => (
                     <SelectItem
-                     key={sec.id}
+                      key={sec.id}
                       value={`${sec.className}-${sec.name}`}
                       textValue={`${sec.className}-${sec.name}`}
                     >{`${sec.className} - ${sec.name}`}</SelectItem>

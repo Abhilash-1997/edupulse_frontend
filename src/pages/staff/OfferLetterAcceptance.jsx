@@ -29,7 +29,7 @@ const OfferLetterAcceptance = () => {
             // Assuming the logged in user context has ID.
             if (!user?.id) return;
 
-            const response = await staffService.generateOfferLetter(user.id);
+            const response = await staffService.generateOfferLetter(user.staffProfile?.id);
             if (response?.data) {
                 const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
                 setPdfUrl(url);
@@ -46,7 +46,7 @@ const OfferLetterAcceptance = () => {
     const handleAccept = async () => {
         setActionLoading(true);
         try {
-            const response = await staffService.acceptOffer();
+            const response = await staffService.acceptOffer(user.staffProfile?.id);
             if (response?.data?.success) {
                 addToast({ title: "Welcome!", description: "You have successfully joined the team.", color: "success" });
                 const userData = user;

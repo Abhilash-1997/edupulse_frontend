@@ -275,8 +275,8 @@ const Timetable = () => {
                           {entry.startTime} - {entry.endTime}
                         </td>
                         <td className="p-3 hidden lg:table-cell">
-                          {entry.User?.name ||
-                            `${entry.User?.firstName} ${entry.User?.lastName}` ||
+                          {entry.teacher?.name ||
+                            `${entry.user?.firstName} ${entry.User?.lastName}` ||
                             "-"}
                         </td>
                         <td className="p-3 hidden md:table-cell">

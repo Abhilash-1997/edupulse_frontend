@@ -55,8 +55,8 @@ export default function FeeStructure() {
                 academicService.getAllClasses()
             ]);
 
-            if (feeRes.data?.success) setFees(feeRes.data.data?.fees || []);
-            if (classRes.data?.success) setClasses(classRes.data.data?.classes || []);
+            if (feeRes.data?.success) setFees(feeRes.data?.data || []);
+            if (classRes.data?.success) setClasses(classRes.data?.data || []);
         } catch (error) {
             addToast({
                 title: 'Error',

@@ -21,6 +21,7 @@ import libraryService from './libraryService';
 import chatService from './chatService';
 import transportService from './transportService';
 import studyMaterialService from './studyMaterialService';
+import gradeRuleService from './gradeRuleService';
 
 export {
     authService,
@@ -45,7 +46,7 @@ export {
     libraryService,
     chatService,
     transportService,
-    studyMaterialService
-
-
+    studyMaterialService,
+    gradeRuleService
 };
+

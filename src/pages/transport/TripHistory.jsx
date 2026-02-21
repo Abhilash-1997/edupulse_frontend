@@ -212,11 +212,11 @@ const TripHistory = () => {
                                                     <Icon icon="mdi:bus" className="text-primary" width={16} />
                                                 </div>
                                                 <span className="font-medium text-foreground">
-                                                    {trip.Bus?.busNumber || 'N/A'}
+                                                    {trip.bus?.busNumber || 'N/A'}
                                                 </span>
                                             </div>
                                         </TableCell>
-                                        <TableCell><span className="text-foreground">{trip.BusRoute?.routeName || '-'}</span></TableCell>
+                                        <TableCell><span className="text-foreground">{trip.route?.routeName || '-'}</span></TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
                                                 <Icon icon={getTripTypeIcon(trip.tripType)} className="text-default-500" width={18} />

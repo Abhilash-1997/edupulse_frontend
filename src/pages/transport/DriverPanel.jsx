@@ -76,8 +76,9 @@ const DriverPanel = () => {
             if (selectedBus) {
                 try {
                     const response = await transportService.getLiveLocation(selectedBus);
+                    console.log("CheckActiveTrip", response);
                     if (response.data?.success && response.data.data) {
-                        setActiveTrip(response.data.data);
+                        setActiveTrip(response.data.data.activeTrip);
                         setIsTracking(true);
                         startLocationTracking();
                     }
@@ -98,7 +99,6 @@ const DriverPanel = () => {
             setError('Geolocation is not supported by your browser');
             return;
         }
-
         const id = navigator.geolocation.watchPosition(
             (position) => {
                 const { latitude, longitude, speed, heading, accuracy } = position.coords;
@@ -163,8 +163,10 @@ const DriverPanel = () => {
         try {
             const response = await transportService.startTrip(selectedBus, {
                 routeId: selectedRoute || undefined,
-                tripType: 'MORNING',
+                tripType: routes.find((r) => r.id === selectedRoute).routeType   
             });
+            console.log("Ressponse of trip ", response);
+            
 
             if (response.data?.success) {
                 setActiveTrip(response.data.data);
@@ -176,12 +178,20 @@ const DriverPanel = () => {
         }
     };
 
+    useEffect(() => {
+        console.log("Active trip ", activeTrip);
+        
+    },[activeTrip])
+    console.log("Active trip ", activeTrip?.activeTrip?.id);
+    
+    
+
     // Handle trip end
     const handleEndTrip = async () => {
         if (!activeTrip) return;
 
         try {
-            await transportService.endTrip(activeTrip.id);
+            await transportService.endTrip(activeTrip?.bus?.id);
             setActiveTrip(null);
             setIsTracking(false);
             stopLocationTracking();

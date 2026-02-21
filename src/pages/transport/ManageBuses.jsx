@@ -133,6 +133,11 @@ const ManageBuses = () => {
         { key: 'actions', label: 'Actions' },
     ];
 
+    useEffect(() => {
+        console.log("Bus Details ", buses);
+        
+    },[buses])
+
     return (
         <div className="p-6 space-y-6">
             <PageHeader
@@ -179,10 +184,10 @@ const ManageBuses = () => {
                                         </TableCell>
                                         <TableCell><span className="text-default-500">{bus.registrationNumber}</span></TableCell>
                                         <TableCell>
-                                            {bus.user?.name ? (
+                                            {bus.driver? (
                                                 <div className="flex items-center gap-2">
                                                     <Icon icon="mdi:account" className="text-default-400" />
-                                                    <span className="text-foreground">{bus.user?.name}</span>
+                                                    <span className="text-foreground">{bus.driver?.name}</span>
                                                 </div>
                                             ) : (
                                                 <span className="text-default-400 italic">Not assigned</span>
@@ -278,7 +283,7 @@ const ManageBuses = () => {
                             labelPlacement="outside"
                         >
                             {staff.map((s) => (
-                                <SelectItem key={s.id} textValue={s.user?.name || s.name}>
+                                <SelectItem key={s.user?.id} textValue={s.user?.name || s.name}>
                                     {s.user?.name || s.name}
                                 </SelectItem>
                             ))}

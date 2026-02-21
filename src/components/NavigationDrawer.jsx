@@ -57,6 +57,7 @@ export default function NavigationDrawer({ isOpen, onClose }) {
                         { name: 'Exam List', path: '/exams', icon: 'mdi:file-document-edit' },
                         { name: 'Exam Results', path: '/exams/results', icon: 'mdi:chart-bar' },
                         { name: 'Exam Reports', path: '/exams/reports', icon: 'mdi:card-account-details' },
+                        { name: 'Grade Rules', path: '/admin/grade-rules', icon: 'mdi:format-list-numbered' },
                     ],
                 },
 

@@ -27,8 +27,18 @@ const getAllSchools = async () => {
     }
 };
 
+const updateSchoolStatus = async (schoolId, status) => {
+    try {
+        const response = await api.put(`/dashboard/schools/${schoolId}/status`, { status });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+};
+
 export default {
     getSchoolStats,
     getSystemStats,
-    getAllSchools
+    getAllSchools,
+    updateSchoolStatus
 };

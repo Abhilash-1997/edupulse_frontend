@@ -54,6 +54,15 @@ const getBookDetails = async (id) => {
     }
 };
 
+const getSectionBookDetais = async(id) => {
+    try {
+        const response = await api.get(`/library/section-books/${id}`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
 const createBook = async (data) => {
     try {
         const response = await api.post('/library/books', data);
@@ -139,6 +148,8 @@ const uploadSectionsBulk = async (formData) => {
     }
 };
 
+
+
 const uploadBooksBulk = async (formData) => {
     try {
         const response = await api.post('/upload/books', formData, {
@@ -168,7 +179,8 @@ const libraryService = {
     getTransactions,
     getDashboardStats,
     uploadSectionsBulk,
-    uploadBooksBulk
+    uploadBooksBulk,
+    getSectionBookDetais
 };
 
 export default libraryService;

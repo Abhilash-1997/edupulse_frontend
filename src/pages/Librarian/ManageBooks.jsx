@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
     Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure,
-    Select, SelectItem, Pagination, PaginationItem, PaginationCursor, addToast
+    Select, SelectItem, Pagination, PaginationItem, PaginationCursor, addToast,
+    Card,
+    CardBody
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from 'react-router-dom';

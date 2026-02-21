@@ -155,7 +155,7 @@ export default function Subjects() {
                                             <Chip size="sm" variant="dot" color="primary">{subject.code}</Chip>
                                         </TableCell>
                                         <TableCell>
-                                            {subject.Class ? subject.Class.name : 'N/A'}
+                                            {subject.classInfo ? subject.classInfo.name : 'N/A'}
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex gap-2">

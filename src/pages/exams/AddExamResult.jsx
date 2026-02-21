@@ -392,7 +392,7 @@ export default function AddExamResult() {
                                             <TableRow key={student.id}>
                                                 <TableCell>
                                                     <div className="flex flex-col">
-                                                        <span className="font-medium">{student.firstName} {student.lastName}</span>
+                                                        <span className="font-medium">{student.name} {student.lastName}</span>
                                                         <span className="text-xs text-default-500">{student.admissionNumber}</span>
                                                     </div>
                                                 </TableCell>

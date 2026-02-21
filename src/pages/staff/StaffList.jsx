@@ -212,7 +212,7 @@ const StaffList = () => {
                             </TableCell>
                             <TableCell>
                                 <span className={`px-2 py-1 rounded-full text-xs font-semibold ${person.isActive ? 'bg-success-100 text-success-700' : 'bg-danger-100 text-danger-700'}`}>
-                                    {person.isActive ? "Active" : "Inactive"}
+                                    {person.status ? "Active" : "Inactive"}
                                 </span>
                             </TableCell>
                             <TableCell>
