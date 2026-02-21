@@ -6,8 +6,8 @@ import LoadingSpinner from './LoadingSpinner';
  * ProtectedRoute component - Protects routes that require authentication
  * Redirects to login if user is not authenticated
  */
-const ProtectedRoute = ({ children }) => {
-    const { isAuthenticated, loading } = useAuth();
+const ProtectedRoute = ({ children, allowedRoles }) => {
+    const { isAuthenticated, loading, user } = useAuth();
 
     // Show loading spinner while checking authentication
     if (loading) {
@@ -21,6 +21,11 @@ const ProtectedRoute = ({ children }) => {
     // Redirect to login if not authenticated
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
+    }
+
+    // Check if user has required role
+    if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+        return <Navigate to="/dashboard" replace />;
     }
 
     // Render protected content if authenticated

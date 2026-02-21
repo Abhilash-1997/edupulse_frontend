@@ -23,10 +23,10 @@ import ParentList from '@/pages/parents/ParentList';
 import LinkStudentToParent from '@/pages/parents/LinkStudentToParent';
 import CreateParent from '@/pages/parents/CreateParent';
 import ChildDashboard from '@/pages/dashboard/ChildDashboard';
-import BulkUploadPage from '@/pages/admin/BulkUploadPage';
-import Schools from '@/pages/admin/Schools';
-import SchoolSettings from '@/pages/admin/SchoolSettings';
-import GradeRules from '@/pages/admin/GradeRules';
+import BulkUploadPage from '@/pages/SCHOOL_ADMIN/BulkUploadPage';
+import Schools from '@/pages/SCHOOL_ADMIN/Schools';
+import SchoolSettings from '@/pages/SCHOOL_ADMIN/SchoolSettings';
+import GradeRules from '@/pages/SCHOOL_ADMIN/GradeRules';
 
 
 
@@ -128,95 +128,95 @@ function App() {
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
 
-              <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="register-school" element={<ProtectedRoute><RegisterSchool /></ProtectedRoute>} />
+              <Route path="dashboard" element={<ProtectedRoute ><Dashboard /></ProtectedRoute>} />
+              <Route path="register-school" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN"]}><RegisterSchool /></ProtectedRoute>} />
               {/* Academic Routes */}
-              <Route path="academic/classes" element={<ProtectedRoute><Classes /></ProtectedRoute>} />
-              <Route path="academic/subjects" element={<ProtectedRoute><Subjects /></ProtectedRoute>} />
-              <Route path="academic/timetable" element={<ProtectedRoute><Timetable /></ProtectedRoute>} />
-              <Route path="academic/timetable/create-daily" element={<ProtectedRoute><CreateDailyTimetable /></ProtectedRoute>} />
+              <Route path="academic/classes" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><Classes /></ProtectedRoute>} />
+              <Route path="academic/subjects" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><Subjects /></ProtectedRoute>} />
+              <Route path="academic/timetable" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><Timetable /></ProtectedRoute>} />
+              <Route path="academic/timetable/create-daily" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><CreateDailyTimetable /></ProtectedRoute>} />
 
-              {/* Student & Parent Management (Admin) */}
-              <Route path="students" element={<ProtectedRoute><StudentList /></ProtectedRoute>} />
-              <Route path="parents" element={<ProtectedRoute><ParentList /></ProtectedRoute>} />
-              <Route path="parents/:parentId/link-students" element={<ProtectedRoute><LinkStudentToParent /></ProtectedRoute>} />
-              <Route path="register-parent" element={<ProtectedRoute><CreateParent /></ProtectedRoute>} />
-              <Route path="admin/bulk-upload/:type" element={<ProtectedRoute><BulkUploadPage /></ProtectedRoute>} />
-              <Route path="admin/schools" element={<ProtectedRoute><Schools /></ProtectedRoute>} />
-              <Route path="school/settings" element={<ProtectedRoute><SchoolSettings /></ProtectedRoute>} />
-              <Route path="admin/grade-rules" element={<ProtectedRoute><GradeRules /></ProtectedRoute>} />
+              {/* Student & Parent Management (SCHOOL_ADMIN) */}
+              <Route path="students" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><StudentList /></ProtectedRoute>} />
+              <Route path="parents" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><ParentList /></ProtectedRoute>} />
+              <Route path="parents/:parentId/link-students" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><LinkStudentToParent /></ProtectedRoute>} />
+              <Route path="register-parent" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><CreateParent /></ProtectedRoute>} />
+              <Route path="admin/bulk-upload/:type" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><BulkUploadPage /></ProtectedRoute>} />
+              <Route path="admin/schools" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><Schools /></ProtectedRoute>} />
+              <Route path="school/settings" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><SchoolSettings /></ProtectedRoute>} />
+              <Route path="admin/grade-rules" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN"]}><GradeRules /></ProtectedRoute>} />
               <Route path="settings/update-password" element={<ProtectedRoute><UpdatePassword /></ProtectedRoute>} />
 
-              <Route path="parent/child/:studentId" element={<ProtectedRoute><ChildDashboard /></ProtectedRoute>} />
+              <Route path="parent/child/:studentId" element={<ProtectedRoute allowedRoles={["PARENT"]}><ChildDashboard /></ProtectedRoute>} />
 
               {/* Attendance Routes */}
-              <Route path="attendance/mark" element={<ProtectedRoute><MarkAttendance /></ProtectedRoute>} />
-              <Route path="attendance/report" element={<ProtectedRoute><AttendanceReport /></ProtectedRoute>} />
+              <Route path="attendance/mark" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><MarkAttendance /></ProtectedRoute>} />
+              <Route path="attendance/report" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><AttendanceReport /></ProtectedRoute>} />
 
               {/* Exam Routes */}
-              <Route path="exams" element={<ProtectedRoute><ExamList /></ProtectedRoute>} />
-              <Route path="exams/new" element={<ProtectedRoute><CreateExam /></ProtectedRoute>} />
-              <Route path="exams/results" element={<ProtectedRoute><ExamResults /></ProtectedRoute>} />
-              <Route path="exams/results/add" element={<ProtectedRoute><AddExamResult /></ProtectedRoute>} />
-              <Route path="exams/reports" element={<ProtectedRoute><ReportCard /></ProtectedRoute>} />
+              <Route path="exams" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><ExamList /></ProtectedRoute>} />
+              <Route path="exams/new" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><CreateExam /></ProtectedRoute>} />
+              <Route path="exams/results" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><ExamResults /></ProtectedRoute>} />
+              <Route path="exams/results/add" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><AddExamResult /></ProtectedRoute>} />
+              <Route path="exams/reports" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER"]}><ReportCard /></ProtectedRoute>} />
 
               {/* Finance Routes */}
-              <Route path="finance/statistics" element={<ProtectedRoute><FeeStatistics /></ProtectedRoute>} />
-              <Route path="finance/class/:classId" element={<ProtectedRoute><ClassFeeDetails /></ProtectedRoute>} />
-              <Route path="finance/fees" element={<ProtectedRoute><FeeStructure /></ProtectedRoute>} />
-              <Route path="finance/payroll" element={<ProtectedRoute><Payroll /></ProtectedRoute>} />
-              <Route path="finance/collect-fees" element={<ProtectedRoute><CollectFees /></ProtectedRoute>} />
-              <Route path="finance/receipts" element={<ProtectedRoute><FeeReceipts /></ProtectedRoute>} />
+              <Route path="finance/statistics" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><FeeStatistics /></ProtectedRoute>} />
+              <Route path="finance/class/:classId" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", s]}><ClassFeeDetails /></ProtectedRoute>} />
+              <Route path="finance/fees" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><FeeStructure /></ProtectedRoute>} />
+              <Route path="finance/payroll" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><Payroll /></ProtectedRoute>} />
+              <Route path="finance/collect-fees" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><CollectFees /></ProtectedRoute>} />
+              <Route path="finance/receipts" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><FeeReceipts /></ProtectedRoute>} />
 
               {/* Parent Fee Management */}
-              <Route path="parent/fees" element={<ProtectedRoute><ChildFees /></ProtectedRoute>} />
+              <Route path="parent/fees" element={<ProtectedRoute allowedRoles={["PARENT"]}><ChildFees /></ProtectedRoute>} />
 
               {/* Other Routes */}
               <Route path="notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
               <Route path="announcements" element={<ProtectedRoute><Announcements /></ProtectedRoute>} />
 
               {/* Staff & HR */}
-              <Route path="staff" element={<ProtectedRoute><StaffList /></ProtectedRoute>} />
-              <Route path="staff/create" element={<ProtectedRoute><CreateStaff /></ProtectedRoute>} />
-              <Route path="staff/attendance" element={<ProtectedRoute><StaffAttendance /></ProtectedRoute>} />
-              <Route path="staff/payroll" element={<ProtectedRoute><PayrollManagement /></ProtectedRoute>} />
-              <Route path="leave-management" element={<ProtectedRoute><LeaveManagement /></ProtectedRoute>} />
-              <Route path="my-leaves" element={<ProtectedRoute><MyLeaves /></ProtectedRoute>} />
+              <Route path="staff" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><StaffList /></ProtectedRoute>} />
+              <Route path="staff/create" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><CreateStaff /></ProtectedRoute>} />
+              <Route path="staff/attendance" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><StaffAttendance /></ProtectedRoute>} />
+              <Route path="staff/payroll" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><PayrollManagement /></ProtectedRoute>} />
+              <Route path="leave-management" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><LeaveManagement /></ProtectedRoute>} />
+              <Route path="my-leaves" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><MyLeaves /></ProtectedRoute>} />
               <Route path="offer-letter" element={<ProtectedRoute><OfferLetterAcceptance /></ProtectedRoute>} />
               <Route path="complaints" element={<ProtectedRoute><Complaints /></ProtectedRoute>} />
               <Route path="gallery" element={<ProtectedRoute><Gallery /></ProtectedRoute>} />
               <Route path="gallery/:id" element={<ProtectedRoute><GalleryDetails /></ProtectedRoute>} />
-              <Route path="teacher/my-students" element={<ProtectedRoute><MyStudents /></ProtectedRoute>} />
-              <Route path="teacher/my-periods" element={<ProtectedRoute><MyPeriods /></ProtectedRoute>} />
-              <Route path="teacher/my-class-timetable" element={<ProtectedRoute><MyClassTimetable /></ProtectedRoute>} />
+              <Route path="teacher/my-students" element={<ProtectedRoute allowedRoles={["TEACHER"]}><MyStudents /></ProtectedRoute>} />
+              <Route path="teacher/my-periods" element={<ProtectedRoute allowedRoles={["TEACHER"]}><MyPeriods /></ProtectedRoute>} />
+              <Route path="teacher/my-class-timetable" element={<ProtectedRoute allowedRoles={["TEACHER"]}><MyClassTimetable /></ProtectedRoute>} />
 
               {/* Chat Route */}
               <Route path="chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
 
               {/* Library Management */}
-              <Route path="library" element={<ProtectedRoute><LibrarianDashboard /></ProtectedRoute>} />
-              <Route path="library/sections" element={<ProtectedRoute><ManageSections /></ProtectedRoute>} />
-              <Route path="library/books" element={<ProtectedRoute><ManageBooks /></ProtectedRoute>} />
-              <Route path="library/issue" element={<ProtectedRoute><IssueBook /></ProtectedRoute>} />
-              <Route path="library/return" element={<ProtectedRoute><ReturnBook /></ProtectedRoute>} />
-              <Route path="library/renew" element={<ProtectedRoute><RenewBook /></ProtectedRoute>} />
-              <Route path="library/section/:id/books" element={<ProtectedRoute><SectionBooks /></ProtectedRoute>} />
-              <Route path="library/book/:id" element={<ProtectedRoute><BookDetails /></ProtectedRoute>} />
+              <Route path="library" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "LIBRARIAN"]}><LibrarianDashboard /></ProtectedRoute>} />
+              <Route path="library/sections" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "LIBRARIAN"]}><ManageSections /></ProtectedRoute>} />
+              <Route path="library/books" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "LIBRARIAN"]}><ManageBooks /></ProtectedRoute>} />
+              <Route path="library/issue" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "LIBRARIAN"]}><IssueBook /></ProtectedRoute>} />
+              <Route path="library/return" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "LIBRARIAN"]}><ReturnBook /></ProtectedRoute>} />
+              <Route path="library/renew" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "LIBRARIAN"]}><RenewBook /></ProtectedRoute>} />
+              <Route path="library/section/:id/books" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "LIBRARIAN"]}><SectionBooks /></ProtectedRoute>} />
+              <Route path="library/book/:id" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "LIBRARIAN"]}><BookDetails /></ProtectedRoute>} />
 
               {/* Transport / Bus Tracking */}
               <Route path="transport/tracking" element={<ProtectedRoute><BusTracking /></ProtectedRoute>} />
-              <Route path="transport/buses" element={<ProtectedRoute><ManageBuses /></ProtectedRoute>} />
-              <Route path="transport/routes" element={<ProtectedRoute><ManageRoutes /></ProtectedRoute>} />
-              <Route path="transport/assignments" element={<ProtectedRoute><BusAssignments /></ProtectedRoute>} />
-              <Route path="transport/driver-panel" element={<ProtectedRoute><DriverPanel /></ProtectedRoute>} />
-              <Route path="transport/trip-history" element={<ProtectedRoute><TripHistory /></ProtectedRoute>} />
+              <Route path="transport/buses" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "BUS_DRIVER"]}><ManageBuses /></ProtectedRoute>} />
+              <Route path="transport/routes" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><ManageRoutes /></ProtectedRoute>} />
+              <Route path="transport/assignments" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN"]}><BusAssignments /></ProtectedRoute>} />
+              <Route path="transport/driver-panel" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "BUS_DRIVER"]}><DriverPanel /></ProtectedRoute>} />
+              <Route path="transport/trip-history" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "BUS_DRIVER"]}><TripHistory /></ProtectedRoute>} />
 
               {/* Study Materials Routes */}
-              <Route path="study-materials" element={<ProtectedRoute><StudyMaterialClasses /></ProtectedRoute>} />
-              <Route path="study-materials/class/:classId" element={<ProtectedRoute><StudyMaterialClassSections /></ProtectedRoute>} />
-              <Route path="study-materials/section/:sectionId" element={<ProtectedRoute><StudyMaterials /></ProtectedRoute>} />
-              <Route path="study-materials/sections/:id" element={<ProtectedRoute><SectionDetails /></ProtectedRoute>} />
-              <Route path="study-materials/video/:id" element={<ProtectedRoute><VideoPlayer /></ProtectedRoute>} />
+              <Route path="study-materials" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER", "PARENT"]}><StudyMaterialClasses /></ProtectedRoute>} />
+              <Route path="study-materials/class/:classId" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER", "PARENT"]}><StudyMaterialClassSections /></ProtectedRoute>} />
+              <Route path="study-materials/section/:sectionId" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER", "PARENT"]}><StudyMaterials /></ProtectedRoute>} />
+              <Route path="study-materials/sections/:id" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER", "PARENT"]}><SectionDetails /></ProtectedRoute>} />
+              <Route path="study-materials/video/:id" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", "TEACHER", "PARENT"]}><VideoPlayer /></ProtectedRoute>} />
 
 
 
