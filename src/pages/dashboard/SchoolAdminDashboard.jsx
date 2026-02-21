@@ -27,24 +27,16 @@ export default function SchoolAdminDashboard() {
     const fetchStats = async () => {
       try {
         const response = await dashboardService.getSchoolStats();
-        console.log("Response ,,,", response);
-        console.log("Response ,,,", response.data.data);
-        if (response.data?.success) {
-          console.log("check---------->");
-          setStats(response.data.data);
-        }
-        console.log("Stattttttts ", stats);
-      } catch (error) {
+        if (response.data?.success) setStats(response.data.data);
+      } 
+      catch (error) {
+
       } finally {
         setLoading(false);
       }
     };
     fetchStats();
   }, []);
-
-  useEffect(() => {
-    console.log("Updated stats:", stats);
-  }, [stats]);
 
   const statCards = [
     {

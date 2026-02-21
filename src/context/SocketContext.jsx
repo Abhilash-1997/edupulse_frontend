@@ -81,9 +81,6 @@ export const SocketProvider = ({ children }) => {
 
     if (isAuthenticated) {
       const SOCKET_URL = "http://localhost:8080/api/ws-chat"; 
-      // If using tunnel:
-      // const SOCKET_URL = "https://your-tunnel-url/ws-chat";
-
       client = new Client({
         webSocketFactory: () => new SockJS(SOCKET_URL),
         reconnectDelay: 5000,

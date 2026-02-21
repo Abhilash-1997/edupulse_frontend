@@ -58,8 +58,6 @@ export default function AttendanceReport() {
             if (response.data?.success) {
                 // Backend returns data: { attendance: [...] }
                 const data = response.data?.data || [];
-                console.log("Attendance data ", data);
-                
                 setReportData(data);
                 calculateStats(data);
             } else {

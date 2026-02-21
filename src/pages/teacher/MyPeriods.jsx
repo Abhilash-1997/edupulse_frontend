@@ -44,10 +44,6 @@ export default function MyPeriods() {
         }
         return acc;
     }, {});
-
-    console.log("Grouped Periods , " ,groupedPeriods);
-    
-
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {

@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    // Initialize auth state from localStorage on mount
     useEffect(() => {
         const initAuth = () => {
             const token = localStorage.getItem('token');
@@ -20,8 +19,6 @@ export const AuthProvider = ({ children }) => {
             if (token && storedUser) {
                 try {
                     const parsedUser = JSON.parse(storedUser);
-                    console.log("StoredUser -=-=-=-=- ", storedUser);
-                    
                     setUser(parsedUser);
                     setIsAuthenticated(true);
                 } catch (error) {
@@ -34,11 +31,6 @@ export const AuthProvider = ({ children }) => {
         initAuth();
     }, []);
 
-    /**
-     * Login function
-     * @param {Object} userData - User data from login response
-     * @param {string} token - JWT token
-     */
     const login = (userData, token) => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(userData));
@@ -46,9 +38,6 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
     };
 
-    /**
-     * Logout function
-     */
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -56,10 +45,6 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
     };
 
-    /**
-     * Update user data
-     * @param {Object} userData - Updated user data
-     */
     const updateUser = (userData) => {
         localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
@@ -77,10 +62,6 @@ export const AuthProvider = ({ children }) => {
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-/**
- * Custom hook to use auth context
- * @returns {Object} Auth context value
- */
 export const useAuth = () => {
     const context = useContext(AuthContext);   
     if (!context) {

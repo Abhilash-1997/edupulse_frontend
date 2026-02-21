@@ -76,7 +76,6 @@ const DriverPanel = () => {
             if (selectedBus) {
                 try {
                     const response = await transportService.getLiveLocation(selectedBus);
-                    console.log("CheckActiveTrip", response);
                     if (response.data?.success && response.data.data) {
                         setActiveTrip(response.data.data.activeTrip);
                         setIsTracking(true);
@@ -94,7 +93,6 @@ const DriverPanel = () => {
         // Prevent multiple watchers
         if (watchId) return;
 
-        console.log("📍 startLocationTracking called");
         if (!navigator.geolocation) {
             setError('Geolocation is not supported by your browser');
             return;
@@ -102,8 +100,7 @@ const DriverPanel = () => {
         const id = navigator.geolocation.watchPosition(
             (position) => {
                 const { latitude, longitude, speed, heading, accuracy } = position.coords;
-                console.log("📍 New position received from browser:", { latitude, longitude, speed, heading, accuracy });
-
+                
                 const locationData = {
                     lat: latitude,
                     lng: longitude,
@@ -121,8 +118,8 @@ const DriverPanel = () => {
                         busId: selectedBus,
                         ...locationData,
                     });
-                    console.log("📤 Emitting bus:location:update:", { busId: selectedBus, ...locationData });
-                } else {
+                    } 
+                else {
                     console.warn("⚠️ Not emitting location update. Conditions not met:", {
                         socketExists: !!socket,
                         isConnected,
@@ -165,9 +162,6 @@ const DriverPanel = () => {
                 routeId: selectedRoute || undefined,
                 tripType: routes.find((r) => r.id === selectedRoute).routeType   
             });
-            console.log("Ressponse of trip ", response);
-            
-
             if (response.data?.success) {
                 setActiveTrip(response.data.data);
                 setIsTracking(true);
@@ -178,13 +172,7 @@ const DriverPanel = () => {
         }
     };
 
-    useEffect(() => {
-        console.log("Active trip ", activeTrip);
-        
-    },[activeTrip])
-    console.log("Active trip ", activeTrip?.activeTrip?.id);
-    
-    
+
 
     // Handle trip end
     const handleEndTrip = async () => {

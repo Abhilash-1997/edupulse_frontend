@@ -256,10 +256,8 @@ export default function MarkAttendance() {
                                 variant="bordered"
                             >
                                 {sections.map((sec) => {
-                                    console.log("Sections  ------>" , sections);
                                       
                                     return(
-                                    
                                     <SelectItem key={String(sec.id)} value={String(sec.id)}>
                                         {`${sec.className} - ${sec.name}`}
                                     </SelectItem>
@@ -415,28 +413,26 @@ export default function MarkAttendance() {
                         <Table aria-label="Marked Attendance Table" shadow="none" classNames={{ wrapper: "shadow-none bg-content1", th: "bg-default-100 text-default-500" }}>
                             <TableHeader>
                                 <TableColumn>STUDENT</TableColumn>
-                                <TableColumn>ROLL NO</TableColumn>
+                                {/* <TableColumn>ROLL NO</TableColumn> */}
                                 <TableColumn>STATUS</TableColumn>
                                 <TableColumn>ACTIONS</TableColumn>
                             </TableHeader>
                             <TableBody isLoading={loading} emptyContent="No records found">
                                 {markedRecords.map((record) => {
-                                    const student = record.Student;
                                     const isEditing = editingMarkedId === record.id;
                                     const statusConfig = ATTENDANCE_STATUS.find(s => s.value === record.status);
-
                                     return (
                                         <TableRow key={record.id}>
                                             <TableCell>
                                                 <User
-                                                    name={student?.name}
-                                                    description={`Admn: ${student?.admissionNumber}`}
-                                                    avatarProps={{ src: student?.profilePicture, name: student?.name?.charAt(0) }}
+                                                    name={record?.studentName}
+                                                    description={`Admn: ${record?.admissionNumber}`}
+                                                    // avatarProps={{ src: student?.profilePicture, name: student?.name?.charAt(0) }}
                                                 />
                                             </TableCell>
-                                            <TableCell>
+                                            {/* <TableCell>
                                                 <span className="text-small text-default-500">{student?.rollNumber || "-"}</span>
-                                            </TableCell>
+                                            </TableCell> */}
                                             <TableCell>
                                                 {isEditing ? (
                                                     <div className="w-full sm:w-40">

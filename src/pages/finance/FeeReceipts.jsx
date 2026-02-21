@@ -170,11 +170,6 @@ export default function FeeReceipts() {
         addToast({ title: "Refreshed", description: "Data updated successfully", color: "success" });
     };
 
-    useEffect(() => {
-        console.log("Fee Receipts =-=-=-=-=-=-=-=-=-=- ", receipts);
-        
-    }, [receipts])
-
     const statCards = [
         {
             title: 'Collected Today',

@@ -57,7 +57,6 @@ export default function VideoPlayer() {
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, function () {
                 setLoading(false);
-                // video.play().catch(e => console.log("Auto-play prevented", e)); 
             });
             hls.on(Hls.Events.ERROR, function (event, data) {
                 if (data.fatal) {

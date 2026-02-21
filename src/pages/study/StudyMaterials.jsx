@@ -102,9 +102,6 @@ export default function StudyMaterials() {
 
             if (sectionsRes.data?.success && sectionId) {
                 const foundSection = (sectionsRes.data.data || []).find(s => s.id === sectionId);
-
-                console.log("foundSection  ,, ",foundSection);
-                
                 if (foundSection) {
                     setCurrentSection(foundSection);
                     // Pre-fill form if found
@@ -128,7 +125,6 @@ export default function StudyMaterials() {
             if (filterSubject) filters.subjectId = filterSubject;
 
             const response = await studyMaterialService.getAllSections(filters);
-            console.log("Response  ,,", response);
             
             if (response.success) {
                 setSections(response.data);

@@ -76,7 +76,6 @@ export default function TeacherDashboard() {
         visible: { y: 0, opacity: 1 }
     };
 
-    console.log("user ", user);
     
 
     return (

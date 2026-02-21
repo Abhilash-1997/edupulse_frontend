@@ -114,8 +114,6 @@ export default function StudentList() {
     setLoading(true);
     try {
       const params = Object.fromEntries(searchParams.entries());
-      console.log("params ", params);
-
       const response = await studentService.getAllStudents(params);
       if (response.data?.success) {
         let data = response.data.data;
@@ -159,7 +157,6 @@ export default function StudentList() {
     setIsDivisionsLoading(true);
     try {
       const response = await academicService.getDivisions(std);
-      console.log("Response,,, ----------> ", response.data.data);
       if (response.data?.success) {
         setDivisions(response.data.data || []);
       }
@@ -362,10 +359,6 @@ export default function StudentList() {
     hidden: { y: 20, opacity: 0 },
     visible: { y: 0, opacity: 1 },
   };
-
-  useEffect(() => {
-    console.log("Standards ", standards);
-  }, [])
 
   return (
     <motion.div

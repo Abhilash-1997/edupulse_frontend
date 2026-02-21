@@ -133,11 +133,6 @@ const ManageBuses = () => {
         { key: 'actions', label: 'Actions' },
     ];
 
-    useEffect(() => {
-        console.log("Bus Details ", buses);
-        
-    },[buses])
-
     return (
         <div className="p-6 space-y-6">
             <PageHeader

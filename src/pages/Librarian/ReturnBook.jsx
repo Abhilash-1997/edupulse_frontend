@@ -27,20 +27,12 @@ export default function ReturnBook() {
   const [remarks, setRemarks] = useState('');
 
   // Load issued books on mount
-  useEffect(() => {
-    console.log("ReturnBook mounted");
-    handleSearch();
-  }, []);
-
+  
   const handleSearch = async () => {
-    console.log("Fetching ISSUED transactions...");
-
+    
     try {
       setIsLoading(true);
       const res = await libraryService.getTransactions({ status: 'ISSUED' });
-
-      console.log("Transactions API Response:", res);
-
       if (res.data?.success) {
         setTransactions(res.data.data || []);
       } else {

@@ -30,11 +30,7 @@ export default function BookDetails() {
         }
     };
 
-    useEffect(() => {
-        console.log("Book ", book);
-        
-    },[book])
-
+    
     if (isLoading) return <div className="p-6">Loading...</div>;
     if (!book) return <div className="p-6">Book not found</div>;
 

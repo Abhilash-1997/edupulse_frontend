@@ -75,16 +75,6 @@ export default function ExamResults() {
     // When Section changes
     useEffect(() => {
         if (selectedClass) {
-            // Refetch exams based on section (if selected) or just class (if section cleared)
-            // Even if section is '' (all sections), we re-fetch exams for the class.
-            // But if section is selected, we want generic + specific.
-            // Current getExams with classId gets all (checked implementation? No, getExams logic depends on input).
-            // If I call getExams(classId), backend returns all exams where classId=X (and no section restriction unless implemented?).
-            // Wait, previous getExams implemented: if sectionId passed, use OR logic.
-            // If sectionId NOT passed, it returns where classId=X. This logically includes generic AND specific (unless I want to exclude specific?).
-            // Standard getExams(classId) returns all exams for class.
-            // getExams(classId, sectionId) returns generic + specific to section. It DOES NOT return generic + specific to OTHER sections.
-            // So calling fetchExams with sectionId is correct update.
             fetchExams(selectedClass, selectedSection);
         }
     }, [selectedSection]);
@@ -162,7 +152,6 @@ export default function ExamResults() {
             if (selectedSection) params.sectionId = selectedSection;
 
             const response = await examService.getExamResults(params);
-            console.log("Response Exams ", response);
             
             if (response.data?.success) {
                 setResults(response.data?.data || []);

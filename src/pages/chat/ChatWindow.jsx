@@ -31,8 +31,6 @@ const ChatWindow = ({ conversation, currentUser, onBack }) => {
             setLoading(true);
             try {
                 const res = await chatService.getMessages(conversation.id);
-                console.log("responseee ", res.data);
-                
                 if (res.success) {
                     setMessages(res.data.messages || []);
                 }

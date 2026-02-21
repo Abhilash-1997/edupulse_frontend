@@ -315,24 +315,6 @@ export default function Classes() {
                                         errorMessage={errorsStd.name?.message}
                                         variant="bordered"
                                     />
-                                    {/* <Input
-                                        {...registerStd('section')}
-                                        label="Initial Section"
-                                        placeholder="e.g. A"
-                                        isInvalid={!!errorsStd.section}
-                                        errorMessage={errorsStd.section?.message}
-                                        variant="bordered"
-                                    />
-                                    <Select
-                                        label="Class Teacher (Optional)"
-                                        placeholder="Select Teacher"
-                                        {...registerStd('classTeacherId')}
-                                        variant="bordered"
-                                    >
-                                        {teachers.map((t) => (
-                                            <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
-                                        ))}
-                                    </Select> */}
                                 </div>
                             </ModalBody>
                             <ModalFooter>

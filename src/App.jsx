@@ -23,10 +23,10 @@ import ParentList from '@/pages/parents/ParentList';
 import LinkStudentToParent from '@/pages/parents/LinkStudentToParent';
 import CreateParent from '@/pages/parents/CreateParent';
 import ChildDashboard from '@/pages/dashboard/ChildDashboard';
-import BulkUploadPage from '@/pages/SCHOOL_ADMIN/BulkUploadPage';
-import Schools from '@/pages/SCHOOL_ADMIN/Schools';
-import SchoolSettings from '@/pages/SCHOOL_ADMIN/SchoolSettings';
-import GradeRules from '@/pages/SCHOOL_ADMIN/GradeRules';
+import BulkUploadPage from '@/pages/admin/BulkUploadPage';
+import Schools from '@/pages/admin/Schools';
+import SchoolSettings from '@/pages/admin/SchoolSettings';
+import GradeRules from '@/pages/admin/GradeRules';
 
 
 
@@ -162,7 +162,7 @@ function App() {
 
               {/* Finance Routes */}
               <Route path="finance/statistics" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><FeeStatistics /></ProtectedRoute>} />
-              <Route path="finance/class/:classId" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN", s]}><ClassFeeDetails /></ProtectedRoute>} />
+              <Route path="finance/class/:classId" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN"]}><ClassFeeDetails /></ProtectedRoute>} />
               <Route path="finance/fees" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><FeeStructure /></ProtectedRoute>} />
               <Route path="finance/payroll" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><Payroll /></ProtectedRoute>} />
               <Route path="finance/collect-fees" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN", "SCHOOL_ADMIN",]}><CollectFees /></ProtectedRoute>} />

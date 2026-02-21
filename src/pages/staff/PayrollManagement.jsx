@@ -123,8 +123,6 @@ const PayrollManagement = () => {
         setLoadingStaff(true);
         try {
             const response = await staffService.getAllStaff();
-            console.log("Response ++++++++++++++ ", response);
-            
             if (response.data?.success) {
                 setStaffList(response.data.data || []);
             }

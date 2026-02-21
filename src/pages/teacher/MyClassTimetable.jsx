@@ -44,10 +44,6 @@ export default function MyClassTimetable() {
     }
 
     const { classDetails, timetable } = timetableData || {};
-
-    console.log("classDetails ", classDetails);
-    
-
     const groupedTimetable = days.reduce((acc, day) => {
         if (timetable) {
             let daySlots = timetable.filter(t => t.dayOfWeek === day);
@@ -107,9 +103,6 @@ export default function MyClassTimetable() {
                     {days.map(day => {
                         const slots = groupedTimetable[day] || [];
                         if (slots.length === 0) return null;
-                        console.log("Slots ", slots);
-                        
-
                         return (
                             <Card key={day} className="h-full shadow-sm bg-content1 border border-default-200">
                                 <CardBody className="p-0">

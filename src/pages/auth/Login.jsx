@@ -38,11 +38,6 @@ export default function Login() {
             if (response.data?.success) {
                 const token = response.data.data?.token;
                 const user = response.data.data?.user;
-
-                console.log("TOKEN ", token);
-                console.log("USER", user);
-                
-
                 if (token && user) {
                     login(user, token);
                     if (user.role === 'PARENT') {

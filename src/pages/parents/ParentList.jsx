@@ -32,8 +32,6 @@ export default function ParentList() {
   const fetchParents = async () => {
     try {
       const response = await parentService.getAllParents();
-      console.log("Parents  ", response.data.data);
-
       if (response.data?.success) {
         setParents(response.data.data || []);
       }
@@ -120,63 +118,7 @@ export default function ParentList() {
                 <TableColumn>ACTIONS</TableColumn>
               </TableHeader>
               <TableBody emptyContent={"No parents found"} isLoading={loading}>
-                {/* {parents.map((parent) => (
-                                    console.log("parents", parents);
-                                    
-                                    <TableRow key={parent.id}>
-                                        <TableCell>
-                                            <User
-                                                name={parent.guardianName}
-                                                description={parent.occupation}
-                                                avatarProps={{
-                                                    src: `https://i.pravatar.cc/150?u=${parent.id}`
-                                                }}
-                                            />
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex flex-col">
-                                                <span className="text-small">{parent.user?.email}</span>
-                                                <span className="text-tiny text-default-400">{parent.user?.phone || "N/A"}</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {parent.students && parent.students.length > 0 ? (
-                                                <div className="flex gap-1 flex-wrap">
-                                                    {parent.students.map(student => (
-                                                        <Chip key={student.id} size="sm" variant="flat">
-                                                            {student.name}
-                                                        </Chip>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <span className="text-default-400 italic">No students linked</span>
-                                            )}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Chip color="success" size="sm" variant="dot">Active</Chip>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="relative flex items-center gap-2">
-                                                <Tooltip content="Link Student">
-                                                    <span
-                                                        className="text-lg text-primary cursor-pointer active:opacity-50"
-                                                        onClick={() => navigate(`/parents/${parent.id}/link-students`, { state: { parent } })}
-                                                    >
-                                                        <Icon icon="mdi:account-plus" />
-                                                    </span>
-                                                </Tooltip>
-                                                <Tooltip content="Edit Parent">
-                                                    <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                                                        <Icon icon="mdi:pencil" />
-                                                    </span>
-                                                </Tooltip>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))} */}
                 {parents.map((parent) => {
-                  console.log("Parent:", parent); // ✅ correct
-
                   return (
                     <TableRow key={parent.id}>
                       <TableCell>

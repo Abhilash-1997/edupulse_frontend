@@ -48,10 +48,6 @@ const StaffList = () => {
         try {
             const params = Object.fromEntries(searchParams.entries());
             const response = await staffService.getAllStaff(params);
-            console.log("Responseeeeeeeeee ", response);
-            console.log("Responseeeeeeeeee 111", response.data);
-            console.log("Responseeeeeeeeee 222", response.data.data);
-            
             if (response?.data?.success) {
                 setStaff(response.data?.data || []);
             } else {
@@ -122,12 +118,6 @@ const StaffList = () => {
         s.user?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         s.employeeCode?.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    
-    
-    useEffect(() => {
-        console.log("Staff Detailsssssssss ", staff);
-    },[staff])
-
     return (
         <motion.div
             className="space-y-6 p-6"
@@ -211,8 +201,8 @@ const StaffList = () => {
                                 </div>
                             </TableCell>
                             <TableCell>
-                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${person.isActive ? 'bg-success-100 text-success-700' : 'bg-danger-100 text-danger-700'}`}>
-                                    {person.status ? "Active" : "Inactive"}
+                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${person.status ? 'bg-success-100 text-success-700' : 'bg-danger-100 text-danger-700'}`}>
+                                    {person.status}
                                 </span>
                             </TableCell>
                             <TableCell>

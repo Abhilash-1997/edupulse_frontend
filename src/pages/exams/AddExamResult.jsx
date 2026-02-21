@@ -77,7 +77,6 @@ export default function AddExamResult() {
         }
 
         const exam = exams.find(ex => ex.id === examId);
-        console.log("Exam finded ---------->", exam);
         
         if (exam && exam.classInfo?.id) {
             fetchStudents(exam.classInfo?.id);
@@ -123,15 +122,6 @@ export default function AddExamResult() {
                 const results = response.data.data || [];
                 const newMarksData = {};
 
-                // Map results to student IDs. 
-                // The API returns grouped results, typically. 
-                // Let's assume getExamResults returns a list of student results for the specific subject if queried with subjectId.
-                // However, based on examController, getExamResults returns grouped data.
-                // We might need to iterate through the grouped structure or adjust the API usage.
-                // Looking at examController.js:
-                // If subjectId is provided, it filters by subjectId but still groups by student.
-                // Output: data: { results: [ { student: ..., results: [ { marksObtained, ... } ] } ] }
-
                 results.forEach(studentResult => {
                     const studentId = studentResult.student.id;
                     // Find the result for the selected subject
@@ -148,8 +138,6 @@ export default function AddExamResult() {
                     }
                 });
 
-                // Merge with existing marksData to preserve any unsaved input if user switches quickly? 
-                // Better to overwrite with fetched data to show truth.
                 setMarksData(newMarksData);
             }
         } catch (error) {
@@ -173,10 +161,6 @@ export default function AddExamResult() {
 
     const handleCancel = (studentId) => {
         setEditingRowId(null);
-        // Ideally revert changes, but for now we just exit edit mode. 
-        // To strictly revert, we'd need to re-fetch or store original state. 
-        // As a simple fix, re-fetch marks for this student from the "server state" (fetchExistingMarks), 
-        // but `fetchExistingMarks` fetches all. Simpler to just fetch all again or let it be.
         fetchExistingMarks();
     };
 

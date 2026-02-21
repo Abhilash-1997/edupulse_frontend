@@ -64,7 +64,6 @@ const CreateDailyTimetable = () => {
       }
 
       if (subjectsRes?.data?.success) {
-        console.log("Subject data, =======>" ,subjectsRes);
         const subjectData = subjectsRes.data?.data;
         setSubjects(Array.isArray(subjectData) ? subjectData : []);
       }
@@ -74,7 +73,6 @@ const CreateDailyTimetable = () => {
           ? staffRes.data?.data
           : [];
 
-        console.log("StaffRes ----------> ", staffRes);
         
         // Filter for teachers
         const teachersList = allStaff.filter(
@@ -100,10 +98,8 @@ const CreateDailyTimetable = () => {
     setFormData((prev) => {
       const newData = { ...prev, [name]: value };
 
-      // If period count changes, re-initialize periods array if needed
       if (name === "periodCount") {
         const count = parseInt(value) || 0;
-        // Preserve existing periods if reducing count, or add new empty ones
         const currentPeriods = prev.periods.slice(0, count);
         const newPeriods = [...currentPeriods];
         while (newPeriods.length < count) {
@@ -120,13 +116,13 @@ const CreateDailyTimetable = () => {
       }
       return newData;
     });
-    if (error) setError(null); // Clear error on change
+    if (error) setError(null);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (error) setError(null); // Clear error on change
+    if (error) setError(null);
   };
 
   const handlePeriodChange = (index, field, value) => {
@@ -135,17 +131,16 @@ const CreateDailyTimetable = () => {
       newPeriods[index] = { ...newPeriods[index], [field]: value };
       return { ...prev, periods: newPeriods };
     });
-    if (error) setError(null); // Clear error on change
+    if (error) setError(null); 
   };
 
   const handleSubmit = async () => {
     setSaving(true);
     setError(null);
     try {
-      // Transform data to match backend expectation
       const payload = {
         sectionId: formData.sectionId,
-        dayOfWeek: formData.day, // Backend expects dayOfWeek
+        dayOfWeek: formData.day, 
         periods: formData.periods.map((p) => ({
           subjectId: p.subjectId,
           teacherId: p.teacherId,
@@ -177,10 +172,6 @@ const CreateDailyTimetable = () => {
       setSaving(false);
     }
   };
-
-  useEffect(() => {
-    console.log("Subjects State:", subjects);
-}, [subjects]);
 
 
   const renderStep1 = () => (
@@ -356,8 +347,6 @@ const CreateDailyTimetable = () => {
                   variant="bordered"
                 >
                   {subjects.map((s) => {
-                    console.log("Subject: --------------------->", subjects);
-
                     return (
                       <SelectItem key={String(s.id)} textValue={s.name}>
                         {s.name} ({s.code})

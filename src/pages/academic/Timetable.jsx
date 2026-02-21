@@ -127,7 +127,6 @@ const Timetable = () => {
   const handleSubmit = async () => {
     setSaving(true);
     try {
-      console.log("formData ", formData);
       const payload = {
         classId: formData.classId,
         sectionId: formData.sectionId,
@@ -371,8 +370,6 @@ const Timetable = () => {
                       variant="bordered"
                     >
                       {sections?.map((s) => {
-                        console.log("Sections-----> ", sections);
-
                         return (
                           <SelectItem
                             key={String(s.id)}
@@ -467,9 +464,6 @@ const Timetable = () => {
                       variant="bordered"
                     >
                       {teachers?.map((t) => {
-                        console.log("teachers", t);
-                        console.log("user id, ---------->" , t.user?.id);
-                        
                         return (
 
                           <SelectItem

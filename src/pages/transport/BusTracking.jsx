@@ -149,8 +149,6 @@ const BusTracking = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [lastUpdate, setLastUpdate] = useState(null);
-    console.log("activeTrip", activeTrip);
-
     // Derived next stop
     const nextStop = activeTrip?.BusRoute?.stops?.[activeTrip?.lastReachedStopOrder]; // Assuming order is unique/identifier
 
@@ -228,8 +226,7 @@ const BusTracking = () => {
     useEffect(() => {
         if (!socket || !selectedBus) return;
 
-        // console.log(`Subscribing to bus: ${selectedBus}`);
-
+        
         // Unsubscribe from previous bus
         if (subscribedBusRef.current && subscribedBusRef.current !== selectedBus) {
             socket.emit('bus:unsubscribe', { busId: subscribedBusRef.current });
@@ -244,8 +241,7 @@ const BusTracking = () => {
 
         // Listen for location updates
         const handleLocationUpdate = (data) => {
-            // console.log('Location update received:', data);
-
+            
             // Ensure ID comparison matches (handle string/number differences)
             if (String(data.busId) === String(selectedBus)) {
                 setBusLocation({
@@ -263,7 +259,7 @@ const BusTracking = () => {
 
         // Listen for subscription confirmation
         socket.on('bus:subscribed', (data) => {
-            // console.log('Subscription confirmed for bus:', data.busId);
+            
         });
 
         // Listen for trip events
@@ -292,7 +288,6 @@ const BusTracking = () => {
         if (isConnected || !selectedBus) return;
 
         const intervalId = setInterval(() => {
-            console.log('Socket disconnected, polling for location...');
             fetchLiveLocation(selectedBus);
         }, 10000); // Poll every 10 seconds
 
@@ -320,8 +315,6 @@ const BusTracking = () => {
     };
 
     const selectedBusData = buses.find((b) => b.id === selectedBus);
-    console.log(busLocation)
-
     return (
         <div className="p-6 space-y-6">
             <PageHeader

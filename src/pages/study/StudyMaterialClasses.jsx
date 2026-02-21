@@ -28,8 +28,6 @@ export default function StudyMaterialClasses() {
     const fetchClasses = async () => {
         try {
             const response = await academicService.getAllClasses();
-            console.log("ResponseClasses ------------->", response);
-            
             if (response.data?.success) {
                 setClasses(response.data.data || []);
             }

@@ -56,8 +56,6 @@ export default function SectionDetails() {
         setLoading(true);
         try {
             const response = await studyMaterialService.getSectionById(id);
-            console.log("responseSection ----------> ", response);
-            
             if (response.success) {
                 setSection(response.data);
             }
