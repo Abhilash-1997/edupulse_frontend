@@ -6,9 +6,7 @@ import "./index.css";
 import App from "./App.jsx";
 // Fix for SockJS in Vite
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </StrictMode>
 );

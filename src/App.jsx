@@ -104,10 +104,24 @@ import StudyMaterialClasses from '@/pages/study/StudyMaterialClasses';
 import StudyMaterialClassSections from '@/pages/study/StudyMaterialClassSections';
 import SectionDetails from '@/pages/study/SectionDetails';
 import VideoPlayer from '@/pages/study/VideoPlayer';
+import useBackendReady from './hooks/useBackendReady';
+import { Spinner } from '@heroui/react';
 
 
 
 function App() {
+  const isBackendReady = useBackendReady();
+
+  if (!isBackendReady) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner />
+        <p className="ml-3 text-gray-600">
+          Loading ... please wait
+        </p>
+      </div>
+    );
+  }
   return (
     <Providers>
       <AuthProvider>

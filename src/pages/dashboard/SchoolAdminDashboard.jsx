@@ -114,7 +114,7 @@ export default function SchoolAdminDashboard() {
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((stat, index) => (
+        {statCards?.map((stat, index) => (
           <motion.div key={index} variants={itemVariants}>
             <Card
               className={`border-l-4 ${stat.borderColor} shadow-sm hover:shadow-md transition-shadow bg-content1 dark:bg-content1`}
@@ -187,7 +187,7 @@ export default function SchoolAdminDashboard() {
                   </TableColumn>
                 </TableHeader>
                 <TableBody emptyContent="No recent admissions">
-                  {stats.recentStudents.map((student) => (
+                  {stats?.recentStudents?.map((student) => (
                                         <TableRow key={student.id} className="hover:bg-default-50 dark:hover:bg-white/5 transition-colors cursor-default">
                                             <TableCell>
                                                 <User
