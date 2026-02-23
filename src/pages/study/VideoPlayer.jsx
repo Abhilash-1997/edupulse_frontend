@@ -12,6 +12,7 @@ export default function VideoPlayer() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [videoData, setVideoData] = useState(null);
+    const apiBase = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const fetchStream = async () => {
@@ -42,7 +43,7 @@ export default function VideoPlayer() {
     const initializePlayer = (src, token) => {
         const video = videoRef.current;
         if (!video) return;
-        const securedSrc = `${src}?token=${token}`;
+        const securedSrc = `${apiBase}${src}?token=${token}`;
         if (Hls.isSupported()) {
             const hls = new Hls();
             window.hls = hls; // Save to window for cleanup
