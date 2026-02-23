@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "@/config/axiosConfig";
 
 export default function useBackendReady() {
   const [isReady, setIsReady] = useState(false);
@@ -9,10 +9,10 @@ export default function useBackendReady() {
 
     const wakeServer = async () => {
       try {
-        await axios.get("/api/check/health");
+        await api.get("/check/health");
         setIsReady(true);
       } catch (error) {
-        retryTimeout = setTimeout(wakeServer, 5000); // 5 sec retry
+        retryTimeout = setTimeout(wakeServer, 30000); // 30 sec retry
       }
     };
 
