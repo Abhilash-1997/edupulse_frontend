@@ -22,16 +22,16 @@ export default defineConfig(() => {
       },
     },
 
-    // ✅ ADD THIS PART
-    server: {
-      proxy: {
-        '/api': {
-          target: 'http://localhost:8080', // Spring Boot port
-          changeOrigin: true,
-          secure: false,
-        }
-      }
-    }
+    // // ✅ ADD THIS PART in development
+    // server: {
+    //   proxy: {
+    //     '/api': {
+    //       target: 'http://localhost:8080', // Spring Boot port
+    //       changeOrigin: true,
+    //       secure: false,
+    //     }
+    //   }
+    // }
 
   };
 });
