@@ -12,7 +12,7 @@ export default function VideoPlayer() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [videoData, setVideoData] = useState(null);
-    const apiBase = import.meta.env.VITE_API_URL;
+    const apiBase = import.meta.env.VITE_STREAM_URL;
 
     useEffect(() => {
         const fetchStream = async () => {
