@@ -1,200 +1,300 @@
-import { PageHeader } from '@/components/common';
-import { academicService, examService, studentService } from '@/services';
-import { addToast, Button, Card, CardBody, Select, SelectItem } from "@heroui/react";
-import { Icon } from "@iconify/react";
+import { PageHeader } from "@/components/common";
+import { academicService, examService, studentService } from "@/services";
+import {
+  addToast,
+  Button,
+  Card,
+  CardBody,
+  Select,
+  SelectItem,
+} from "@heroui/react";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 export default function ReportCard() {
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [exams, setExams] = useState([]);
+  const [students, setStudents] = useState([]);
 
-    const [classes, setClasses] = useState([]);
-    const [sections, setSections] = useState([]);
-    const [exams, setExams] = useState([]);
-    const [students, setStudents] = useState([]);
+  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedSection, setSelectedSection] = useState("");
+  const [selectedExam, setSelectedExam] = useState("");
+  const [selectedStudent, setSelectedStudent] = useState("");
 
-    const [selectedClass, setSelectedClass] = useState('');
-    const [selectedSection, setSelectedSection] = useState('');
-    const [selectedExam, setSelectedExam] = useState('');
-    const [selectedStudent, setSelectedStudent] = useState('');
+  const [loadingClasses, setLoadingClasses] = useState(false);
+  const [loadingSections, setLoadingSections] = useState(false);
+  const [loadingStudents, setLoadingStudents] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
-    const [loading, setLoading] = useState(false);
+  // =========================
+  // INITIAL LOAD
+  // =========================
+  useEffect(() => {
+    fetchInitialData();
+  }, []);
 
-    useEffect(() => {
-        fetchInitialData();
-    }, []);
+  const fetchInitialData = async () => {
+    setLoadingClasses(true);
+    try {
+      const [classRes, examRes] = await Promise.all([
+        academicService.getAllClasses(),
+        examService.getExams(),
+      ]);
 
-    useEffect(() => {
-        if (selectedClass) {
-            const selected = classes.find(c => c.id === selectedClass);
-            setSections(selected?.sections || []);
-            setSelectedSection('');
-            setStudents([]);
-            setSelectedStudent('');
-        } else {
-            setSections([]);
-        }
-    }, [selectedClass]);
+      if (classRes.data?.success) {
+        setClasses(classRes.data.data || []);
+      }
 
-    useEffect(() => {
-        if (selectedSection) {
-            fetchStudents(selectedSection);
-        } else {
-            setStudents([]);
-        }
-    }, [selectedSection]);
+      if (examRes.data?.success) {
+        setExams(examRes.data.data || []);
+      }
+    } catch (error) {
+      addToast({
+        title: "Error",
+        description: "Failed to load initial data",
+        color: "danger",
+      });
+    } finally {
+      setLoadingClasses(false);
+    }
+  };
 
-    const fetchInitialData = async () => {
-        try {
-            const [classRes, examRes] = await Promise.all([
-                academicService.getAllClasses(),
-                examService.getExams()
-            ]);
+  // =========================
+  // FETCH SECTIONS
+  // =========================
+  useEffect(() => {
+    if (!selectedClass) {
+      setSections([]);
+      setSelectedSection("");
+      setStudents([]);
+      setSelectedStudent("");
+      return;
+    }
 
-            if (classRes.data?.success)
-                setClasses(classRes.data?.data || []);
+    fetchSections(selectedClass);
+  }, [selectedClass]);
 
-            if (examRes.data?.success)
-                setExams(examRes.data?.data || []);
+  const fetchSections = async (classId) => {
+    setLoadingSections(true);
+    try {
+      const res = await academicService.getStandardDivisons(classId);
 
-        } catch (error) {
-            addToast({ title: "Error", description: "Failed to load options", color: "danger" });
-        }
-    };
+      if (res.data?.success) {
+        setSections(res.data.data || []);
+      } else {
+        setSections([]);
+      }
 
-    const fetchStudents = async (sectionId) => {
-        try {
-            const res = await studentService.getAllStudents({ sectionId });
-            if (res.data?.success) {
-                setStudents(res.data?.data || []);
-            }
-        } catch (error) {}
-    };
+      setSelectedSection("");
+      setStudents([]);
+      setSelectedStudent("");
+    } catch (error) {
+      addToast({
+        title: "Error",
+        description: "Failed to load sections",
+        color: "danger",
+      });
+    } finally {
+      setLoadingSections(false);
+    }
+  };
 
-    const handleDownload = async () => {
-        if (!selectedStudent || !selectedExam) return;
+  // =========================
+  // FETCH STUDENTS
+  // =========================
+  useEffect(() => {
+    if (!selectedSection) {
+      setStudents([]);
+      setSelectedStudent("");
+      return;
+    }
 
-        setLoading(true);
-        try {
-            const response = await examService.downloadReportCard({
-                studentId: selectedStudent,
-                examId: selectedExam
-            });
+    fetchStudents(selectedSection);
+  }, [selectedSection]);
 
-            if (response.status === 200) {
-                const blob = new Blob([response.data], { type: 'application/pdf' });
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
+  const fetchStudents = async (sectionId) => {
+    setLoadingStudents(true);
+    try {
+      const res = await studentService.getAllStudents({ sectionId });
 
-                const studentName = students.find(s => s.id === selectedStudent)?.name || 'Student';
-                const examName = exams.find(e => e.id === selectedExam)?.name || 'Exam';
+      if (res.data?.success) {
+        setStudents(res.data.data || []);
+      } else {
+        setStudents([]);
+      }
 
-                link.setAttribute('download', `ReportCard_${studentName}_${examName}.pdf`);
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-                window.URL.revokeObjectURL(url);
+      setSelectedStudent("");
+    } catch (error) {
+      addToast({
+        title: "Error",
+        description: "Failed to load students",
+        color: "danger",
+      });
+    } finally {
+      setLoadingStudents(false);
+    }
+  };
 
-                addToast({ title: "Success", description: "Report card downloaded", color: "success" });
-            }
-        } catch (error) {
-            addToast({ title: "Error", description: "Failed to download", color: "danger" });
-        } finally {
-            setLoading(false);
-        }
-    };
+  // =========================
+  // DOWNLOAD REPORT CARD
+  // =========================
+  const handleDownload = async () => {
+    if (!selectedStudent || !selectedExam) return;
 
-    return (
-        <motion.div className="p-6 space-y-6">
+    setDownloading(true);
+    try {
+      const response = await examService.downloadReportCard({
+        studentId: selectedStudent,
+        examId: selectedExam,
+      });
 
-            <PageHeader
-                title="Download Report Card"
-                subtitle="Select details to generate report"
-            />
+      if (response.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/pdf",
+        });
 
-            <Card className="shadow-sm bg-content1 border border-default-200">
-                <CardBody className="p-6 gap-6">
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        const studentName =
+          students.find((s) => s.id === selectedStudent)?.name || "Student";
 
-                        {/* Class */}
-                        <Select
-                            label="Select Class"
-                            selectedKeys={selectedClass ? [selectedClass] : []}
-                            onChange={(e) => setSelectedClass(e.target.value)}
-                            variant="bordered"
-                            labelPlacement="outside"
-                        >
-                            {classes.map((cls) => (
-                                <SelectItem key={cls.id} value={cls.id}>
-                                    {cls.name}
-                                </SelectItem>
-                            ))}
-                        </Select>
+        const examName =
+          exams.find((e) => e.id === selectedExam)?.name || "Exam";
 
-                        {/* Section */}
-                        <Select
-                            label="Select Section"
-                            selectedKeys={selectedSection ? [selectedSection] : []}
-                            onChange={(e) => setSelectedSection(e.target.value)}
-                            variant="bordered"
-                            labelPlacement="outside"
-                            isDisabled={!selectedClass}
-                        >
-                            {sections.map((section) => (
-                                <SelectItem key={section.id} value={section.id}>
-                                    {section.name}
-                                </SelectItem>
-                            ))}
-                        </Select>
+        link.href = url;
+        link.download = `ReportCard_${studentName}_${examName}.pdf`;
 
-                        {/* Exam */}
-                        <Select
-                            label="Select Exam"
-                            selectedKeys={selectedExam ? [selectedExam] : []}
-                            onChange={(e) => setSelectedExam(e.target.value)}
-                            variant="bordered"
-                            labelPlacement="outside"
-                        >
-                            {exams.map((exam) => (
-                                <SelectItem key={exam.id} value={exam.id}>
-                                    {exam.name}
-                                </SelectItem>
-                            ))}
-                        </Select>
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
 
-                        {/* Student */}
-                        <Select
-                            label="Select Student"
-                            selectedKeys={selectedStudent ? [selectedStudent] : []}
-                            onChange={(e) => setSelectedStudent(e.target.value)}
-                            variant="bordered"
-                            labelPlacement="outside"
-                            isDisabled={!selectedSection}
-                        >
-                            {students.map((student) => (
-                                <SelectItem key={student.id} value={student.id}>
-                                    {`${student.name} (${student.admissionNumber})`}
-                                </SelectItem>
-                            ))}
-                        </Select>
-                    </div>
+        addToast({
+          title: "Success",
+          description: "Report card downloaded successfully",
+          color: "success",
+        });
+      }
+    } catch (error) {
+      addToast({
+        title: "Error",
+        description: "Failed to download report card",
+        color: "danger",
+      });
+    } finally {
+      setDownloading(false);
+    }
+  };
 
-                    <div className="flex justify-end mt-4">
-                        <Button
-                            color="primary"
-                            onPress={handleDownload}
-                            isLoading={loading}
-                            isDisabled={!selectedStudent || !selectedExam}
-                        >
-                            Generate & Download PDF
-                        </Button>
-                    </div>
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="p-6 space-y-6"
+    >
+      <PageHeader
+        title="Download Report Card"
+        subtitle="Select class, section, exam and student"
+      />
 
-                </CardBody>
-            </Card>
+      <Card className="shadow-sm bg-content1 border border-default-200">
+        <CardBody className="p-6 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {/* CLASS */}
+            <Select
+              label="Select Class"
+              selectedKeys={
+                selectedClass ? new Set([selectedClass]) : new Set()
+              }
+              onSelectionChange={(keys) => {
+                const value = Array.from(keys)[0];
+                setSelectedClass(value ?? "");
+              }}
+              isLoading={loadingClasses}
+              variant="bordered"
+              labelPlacement="outside"
+            >
+              {classes.map((cls) => (
+                <SelectItem key={String(cls.id)}>{cls.name}</SelectItem>
+              ))}
+            </Select>
 
-        </motion.div>
-    );
-}   
+            {/* SECTION */}
+            <Select
+              label="Select Section"
+              selectedKeys={
+                selectedSection ? new Set([selectedSection]) : new Set()
+              }
+              onSelectionChange={(keys) => {
+                const value = Array.from(keys)[0];
+                setSelectedSection(value ?? "");
+              }}
+              isLoading={loadingSections}
+              isDisabled={!selectedClass}
+              variant="bordered"
+              labelPlacement="outside"
+            >
+              {sections.map((section) => (
+                <SelectItem key={String(section.id)}>{section.name}</SelectItem>
+              ))}
+            </Select>
 
+            {/* EXAM */}
+            <Select
+              label="Select Exam"
+              selectedKeys={selectedExam ? new Set([selectedExam]) : new Set()}
+              onSelectionChange={(keys) => {
+                const value = Array.from(keys)[0];
+                setSelectedExam(value ?? "");
+              }}
+              variant="bordered"
+              labelPlacement="outside"
+            >
+              {exams.map((exam) => (
+                <SelectItem key={String(exam.id)}>{exam.name}</SelectItem>
+              ))}
+            </Select>
+
+            {/* STUDENT */}
+            <Select
+              label="Select Student"
+              selectedKeys={
+                selectedStudent ? new Set([selectedStudent]) : new Set()
+              }
+              onSelectionChange={(keys) => {
+                const value = Array.from(keys)[0];
+                setSelectedStudent(value ?? "");
+              }}
+              isLoading={loadingStudents}
+              isDisabled={!selectedSection}
+              variant="bordered"
+              labelPlacement="outside"
+            >
+              {students.map((student) => (
+                <SelectItem
+                  key={student.id}
+                  textValue={`${student.name} (${student.admissionNumber})`}
+                >
+                  {student.name} ({student.admissionNumber})
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+
+          <div className="flex justify-end mt-4">
+            <Button
+              color="primary"
+              onPress={handleDownload}
+              isLoading={downloading}
+              isDisabled={!selectedStudent || !selectedExam}
+            >
+              Generate & Download PDF
+            </Button>
+          </div>
+        </CardBody>
+      </Card>
+    </motion.div>
+  );
+}

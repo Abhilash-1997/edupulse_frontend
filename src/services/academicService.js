@@ -186,6 +186,17 @@ const assignClassTeacher = async (sectionId, teacherId) => {
   }
 };
 
+const getStandardDivisons = async(classId) => {
+  try {
+    const response = await api.get(
+      `/academics/classes/standards/${classId}/divisions`
+    );
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+}
+
 const academicService = {
   createClass,
   createSection,
@@ -199,7 +210,8 @@ const academicService = {
   getDivisions,
   getTeachers,
   getAllSections,
-  assignClassTeacher
+  assignClassTeacher,
+  getStandardDivisons
 };
 
 export default academicService;
