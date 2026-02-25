@@ -51,20 +51,7 @@ const StaffAttendance = () => {
     const [pendingRemarks, setPendingRemarks] = useState({}); // { staffId: remarks }
     const [pendingSelected, setPendingSelected] = useState(new Set([]));
 
-    // Form States for Editing Marked (if needed)
-    // For now, "Marked" is read-only.
-    // To implement "Update", we can treat the Marked table as active OR have a "Edit" mode.
-    // The requirement is "One read only table where attendance is already marked".
-    // But also "Handle updates".
-    // I will add an "Edit" button to row that turns it into editable mode?
-    // Or just make it editable?
-    // Let's make "Marked" table editable row-by-row or just editable.
-    // To strictly follow "Read Only", I'll make it display CHIPS.
-    // And add an "Edit" action that converts that row back to a state where it can be changed?
-    // Actually, simplest is: Marked table rows have a dropdown but it's disabled? or just Chips.
-    // Let's use Chips + an Edit button that opens a small modal or popover?
-    // Or, allow inline editing by changing the status directly.
-    // Let's stick to: Marked = Read Only. But with an "Edit" button on the row.
+
     const [editingMarkedId, setEditingMarkedId] = useState(null); // ID of marked record being edited
 
     const [loading, setLoading] = useState(false);
@@ -406,10 +393,9 @@ const StaffAttendance = () => {
                         </TableHeader>
                         <TableBody isLoading={loading} emptyContent="No records found">
                             {markedRecords.map((record) => {
-                                const staff = record.StaffProfile;
+                                const staff = record.staff;
                                 const isEditing = editingMarkedId === record.id;
                                 const statusConfig = ATTENDANCE_STATUS.find(s => s.value === record.status);
-
                                 return (
                                     <TableRow key={record.id}>
                                         <TableCell>
