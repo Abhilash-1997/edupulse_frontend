@@ -127,38 +127,38 @@ const updatePassword = async (data) => {
  * @returns {Promise<Object>} Response
  */
 const forgotPassword = async (data) => {
-    try {
-        const response = await api.post('/auth/forgot-password', data);
-        return response;
-    } catch (error) {
-        return error.response;
-    }
+  try {
+    const response = await api.post('/auth/forgot-password', data);
+    return response;
+  } catch (error) {
+    return error.response;
+  }
 };
 
 /**
  * Reset password with token
- * @param {Object} data - { token, newPassword }
+ * @param {Object} data - { email, token, newPassword }
  * @returns {Promise<Object>} Response
  */
 const resetPassword = async (data) => {
-    try {
-        const response = await api.post('/auth/reset-password', data);
-        return response;
-    } catch (error) {
-        return error.response;
-    }
+  try {
+    const response = await api.post('/auth/reset-password', data);
+    return response;
+  } catch (error) {
+    return error.response;
+  }
 };
 
 const authService = {
-    login,
-    register,
-    registerSchool,
-    registerStaff,
-    verifyOtp,
-    updatePassword,
-    forgotPassword,
-    resetPassword,
-    // getMe
+  login,
+  register,
+  registerSchool,
+  registerStaff,
+  verifyOtp,
+  updatePassword,
+  forgotPassword,
+  resetPassword,
+  // getMe
 };
 
 export default authService;

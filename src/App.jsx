@@ -11,6 +11,8 @@ import Login from '@/pages/auth/Login';
 import UpdatePassword from '@/pages/auth/UpdatePassword';
 import Home from '@/pages/Home';
 import Dashboard from '@/pages/Dashboard';
+import ForgotPassword from '@/pages/auth/ForgotPassword';
+import ResetPassword from '@/pages/auth/ResetPassword';
 
 // Static Pages
 import About from '@/pages/About';
@@ -141,6 +143,8 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
               <Route path="dashboard" element={<ProtectedRoute ><Dashboard /></ProtectedRoute>} />
               <Route path="register-school" element={<ProtectedRoute allowedRoles={["SUPER_ADMIN"]}><RegisterSchool /></ProtectedRoute>} />
